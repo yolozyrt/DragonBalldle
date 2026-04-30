@@ -1,1 +1,44 @@
-# DragonBalldle
+# DBDle
+
+MVP classique jouable localement avec HTML, CSS et JavaScript vanilla.
+
+## Lancement
+
+```bash
+npm install
+npm run dev
+```
+
+## Build
+
+```bash
+npm run build
+```
+
+## Arborescence
+
+- `index.html` : mode Classic principal
+- `modes/classic.html` : page Classic alternative
+- `modes/quote.html` : futur mode
+- `modes/silhouette.html` : futur mode
+- `assets/css/` : styles globaux et composants
+- `data/characters.json` : dataset persos
+- `src/` : logique, accès données, rendu et composants UI
+- `supabase/schema.sql` : schéma SQL pour migrer les persos dans Supabase
+
+## Fonctionnement
+
+- Le personnage du jour est déterminé en UTC à partir de la date du jour.
+- Les essais sont sauvegardés dans `localStorage` avec les clés `dbdle:classic:YYYY-MM-DD` et `dbdle:stats`.
+- Les alias sont pris en compte dans l'autocomplete et la sélection d'un personnage.
+
+## Supabase
+
+Si tu veux stocker la liste des persos dans Supabase, exécute le SQL fourni dans [supabase/schema.sql](supabase/schema.sql), puis ajoute un fichier [.env](.env) local avec :
+
+```bash
+VITE_SUPABASE_URL=https://your-project-ref.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-public-key
+```
+
+Si ces variables ne sont pas définies, l'app retombe automatiquement sur le dataset JSON local.
