@@ -19,6 +19,7 @@ npm run build
 
 - `index.html` : mode Classic principal
 - `modes/classic.html` : page Classic alternative
+- `modes/infinity.html` : mode Infinity avec relance illimitée
 - `modes/quote.html` : futur mode
 - `modes/silhouette.html` : futur mode
 - `assets/css/` : styles globaux et composants
@@ -28,7 +29,8 @@ npm run build
 ## Fonctionnement
 
 - Le personnage du jour est déterminé en UTC à partir de la date du jour.
-- Les essais sont sauvegardés dans `localStorage` avec les clés `dbdle:classic:YYYY-MM-DD` et `dbdle:stats`.
+- Les essais sont sauvegardés dans `localStorage` avec les clés `dbdle:classic:YYYY-MM-DD` et `dbdle:stats` pour le mode classique.
+- Le mode Infinity utilise `dbdle:infinity:current` et `dbdle:infinity:stats` pour garder la partie en cours et les statistiques séparément.
 - Les alias sont pris en compte dans l'autocomplete et la sélection d'un personnage.
 
 ## Supabase

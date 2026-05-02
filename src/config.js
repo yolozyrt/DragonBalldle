@@ -1,5 +1,5 @@
 export const APP_NAME = "DBDle";
-export const MODE = "classic";
+export const DEFAULT_MODE = "classic";
 export const MAX_GUESSES = 6;
 export const DAILY_ANCHOR_DATE = "2024-01-01";
 export const SUPABASE_CONFIG = {
@@ -7,6 +7,6 @@ export const SUPABASE_CONFIG = {
   anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || "",
 };
 export const STORAGE_KEYS = {
-  state: (dateKey) => `dbdle:${MODE}:${dateKey}`,
-  stats: "dbdle:stats",
+  state: (mode, key) => `dbdle:${mode}:${key}`,
+  stats: (mode) => (mode === DEFAULT_MODE ? "dbdle:stats" : `dbdle:${mode}:stats`),
 };

@@ -6,16 +6,43 @@ function isPlaceholderSupabaseUrl(url) {
   return /ton-projet\.supabase\.co|your-project-ref\.supabase\.co/i.test(url);
 }
 
+function toList(value) {
+  if (Array.isArray(value)) {
+    return value.filter(Boolean);
+  }
+
+  if (typeof value === "string") {
+    return value
+      .split(/\s*,\s*|\s*\|\s*|\n+/)
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  return [];
+}
+
+function toNumber(value) {
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+
+  const numberValue = Number(value);
+  return Number.isNaN(numberValue) ? null : numberValue;
+}
+
 function mapSupabaseCharacter(record) {
   return {
     id: record.id,
     name: record.name,
-    aliases: record.aliases || [],
+    aliases: toList(record.aliases),
     race: record.race,
-    sagas: record.sagas || [],
-    affiliations: record.affiliations || [],
+    sagas: toList(record.sagas),
+    affiliations: toList(record.affiliations),
     alignment: record.alignment,
-    firstAppearanceYear: record.first_appearance_year,
+    firstAppearanceYear: toNumber(record.first_appearance_year),
+    seriePremiereAppearance: toNumber(record.serie_premiere_apparition ?? record.serie_premiere_appearance),
+    episodePremiereAppearance: toNumber(record.episode_premiere_apparition ?? record.episode_premiere_appearance),
+    image: record.image,
   };
 }
 
@@ -39,11 +66,11 @@ async function loadCharactersFromSupabase() {
   if (!response.ok) {
     if (response.status === 401 || response.status === 403) {
       throw new Error(
-        "Supabase access denied. Check VITE_SUPABASE_ANON_KEY and table policies (RLS) for characters.",
+        "Supabase access denied. Check VITE_SUPABASE_ANON_KEY and table policies (RLS) for character.",
       );
     }
 
-    throw new Error(`Supabase characters request failed with status ${response.status}`);
+    throw new Error(`Supabase character request failed with status ${response.status}`);
   }
 
   const records = await response.json();
