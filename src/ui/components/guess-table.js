@@ -36,12 +36,15 @@ export function renderGuessTable(rows) {
   table.innerHTML = `
     <thead>
       <tr>
+        <th>Image</th>
         <th>Nom</th>
         <th>Race</th>
         <th>Saga</th>
         <th>Affiliation</th>
         <th>Alignement</th>
         <th>Année de première apparition</th>
+        <th>Série première apparition</th>
+        <th>Épisode première apparition</th>
       </tr>
     </thead>
   `;
@@ -54,23 +57,33 @@ export function renderGuessTable(rows) {
       createEl("td", {
         className: "empty-state",
         text: "Aucune proposition pour l'instant. Commencez par un personnage pour comparer les indices.",
-        attrs: { colSpan: "6" },
+        attrs: { colSpan: "9" },
       }),
     );
     tbody.append(emptyRow);
   } else {
     rows.forEach(({ character, comparison }) => {
       const row = createEl("tr");
+      const imageCell = createEl("td", { className: fieldClass(comparison.image.status) });
+      if (character.image) {
+        const imageWrap = createEl("div", { className: "table-image-preview" });
+        const img = createEl("img", {
+          className: "table-image",
+          attrs: { src: character.image, alt: character.name, loading: "lazy" },
+        });
+        imageWrap.append(img);
+        imageCell.append(imageWrap);
+      }
       row.append(
+        imageCell,
         createEl("td", { className: fieldClass(comparison.name.status), text: character.name }),
         createEl("td", { className: fieldClass(comparison.race.status), text: character.race }),
         createEl("td", { className: fieldClass(comparison.sagas.status), text: character.sagas.join(", ") }),
         createEl("td", { className: fieldClass(comparison.affiliations.status), text: character.affiliations.join(", ") }),
         createEl("td", { className: fieldClass(comparison.alignment.status), text: character.alignment }),
-        createEl("td", {
-          className: fieldClass(comparison.firstAppearanceYear.status),
-          text: renderYear(comparison.firstAppearanceYear.status, comparison.firstAppearanceYear.value),
-        }),
+        createEl("td", { className: fieldClass(comparison.firstAppearanceYear.status), text: renderYear(comparison.firstAppearanceYear.status, comparison.firstAppearanceYear.value) }),
+        createEl("td", { className: fieldClass(comparison.seriePremiereAppearance.status), text: String(comparison.seriePremiereAppearance.value || "-") }),
+        createEl("td", { className: fieldClass(comparison.episodePremiereAppearance.status), text: String(comparison.episodePremiereAppearance.value || "-") }),
       );
       tbody.append(row);
     });

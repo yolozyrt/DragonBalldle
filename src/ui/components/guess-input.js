@@ -43,9 +43,23 @@ export function renderGuessInput({ value, suggestions, disabled, onInput, onSubm
         attrs: { type: "button", disabled: disabled ? "disabled" : null },
       });
 
+      const preview = createEl("div", { className: "suggestion-preview" });
+      if (character.image) {
+        preview.append(
+          createEl("img", {
+            className: "suggestion-image",
+            attrs: {
+              src: character.image,
+              alt: character.name,
+              loading: "lazy",
+            },
+          }),
+        );
+      }
+
       suggestion.append(
-        createEl("span", { text: character.name }),
-        createEl("span", { className: "suggestion-meta", text: label !== character.name ? label : character.race }),
+        preview,
+        createEl("span", { className: "suggestion-content", text: character.name }),
       );
 
       suggestion.addEventListener("click", () => onPick(character));

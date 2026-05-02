@@ -170,6 +170,33 @@ button {
   border-color: rgba(255, 215, 0, 0.5);
 }
 
+.banner-win {
+  gap: 14px;
+}
+
+.victory-copy {
+  display: grid;
+  gap: 6px;
+}
+
+.victory-copy strong {
+  font-size: 1.2rem;
+  color: var(--db-gold);
+}
+
+.victory-art {
+  display: grid;
+  place-items: center;
+  min-height: 120px;
+  border: 1px dashed rgba(255, 215, 0, 0.5);
+  border-radius: var(--radius-md);
+  background: rgba(255, 215, 0, 0.08);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.82rem;
+}
+
 .banner-lose {
   border-color: rgba(255, 123, 0, 0.4);
 }

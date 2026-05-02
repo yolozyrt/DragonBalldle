@@ -40,7 +40,7 @@ function mapSupabaseCharacter(record) {
     affiliations: toList(record.affiliations),
     alignment: record.alignment,
     firstAppearanceYear: toNumber(record.first_appearance_year),
-    seriePremiereAppearance: toNumber(record.serie_premiere_apparition ?? record.serie_premiere_appearance),
+    seriePremiereAppearance: record.serie_premiere_apparition ?? record.serie_premiere_appearance ?? null,
     episodePremiereAppearance: toNumber(record.episode_premiere_apparition ?? record.episode_premiere_appearance),
     image: record.image,
   };

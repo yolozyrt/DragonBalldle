@@ -29,11 +29,11 @@ function buildHeader({
 
 function buildFooter({ stats, guessLabel, isInfinity }) {
   const footer = createEl("footer", { className: "game-footer" });
-  footer.append(
-    createEl("div", { html: `<strong>${guessLabel}</strong>` }),
-  );
 
   if (isInfinity) {
+    footer.append(
+      createEl("div", { html: `<strong>${guessLabel}</strong>` }),
+    );
     footer.append(
       createEl("div", {
         text: `Parties jouées : ${stats.played}`,
@@ -75,11 +75,8 @@ export function renderClassic(app, state) {
 
   const banner = renderResultBanner({
     status: state.status,
-    answerName: state.status === "lost" ? state.answer.name : undefined,
-    guessesUsed: state.rows.length,
+    answerName: state.status === "won" || state.status === "lost" ? state.answer.name : undefined,
     maxGuesses: MAX_GUESSES,
-    shareText: state.shareText || undefined,
-    onCopyShare: state.shareText ? () => state.copyShare(state.shareText) : undefined,
     modeLabel: state.modeLabel,
     onRestart: state.onRestart,
     restartLabel: state.restartLabel,

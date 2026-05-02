@@ -5,7 +5,7 @@ import { compareGuess } from "./core/compare.js";
 import { loadGameState, loadStats, saveGameState, saveStats } from "./core/storage.js";
 import { loadCharacters } from "./data/load-data.js";
 import { findCharacterByQuery, searchCharacters } from "./data/search.js";
-import { copyText, qs } from "./ui/dom.js";
+import { qs } from "./ui/dom.js";
 import { renderClassic, renderPlaceholder } from "./ui/render.js";
 
 const app = qs("#app");
@@ -32,22 +32,6 @@ const modeConfig = {
 
 const currentMode = modeConfig[page] || modeConfig.classic;
 const isInfinityMode = page === "infinity";
-
-function buildShareText({ status, rows }) {
-  const outcome = isInfinityMode ? `${rows.length} essai${rows.length > 1 ? "s" : ""}` : status === "won" ? `${rows.length}/${MAX_GUESSES}` : `X/${MAX_GUESSES}`;
-  const clueRow = rows
-    .map(({ comparison }) => {
-      const saga = comparison.sagas.status === "exact" ? "S" : comparison.sagas.status === "partial" ? "s" : ".";
-      const affiliation =
-        comparison.affiliations.status === "exact" ? "A" : comparison.affiliations.status === "partial" ? "a" : ".";
-      const year = comparison.firstAppearanceYear.status === "exact" ? "Y" : comparison.firstAppearanceYear.status === "higher" ? "↑" : "↓";
-      return `${saga}${affiliation}${year}`;
-    })
-    .join(" ");
-
-  return [`DBDle ${isInfinityMode ? "Infinity" : "Classique"} ${dateKey}`, outcome, clueRow].filter(Boolean).join("\n");
-}
-
 function updateStatsOnFinish(currentStats, status, guessCount) {
   const errors = guessCount - 1;
   const next = {
@@ -89,7 +73,6 @@ async function start() {
     guessText: "",
     rows: [],
     status: "playing",
-    shareText: "",
     stats,
     answer,
     answerId: answer.id,
@@ -97,7 +80,6 @@ async function start() {
     guessCount: 0,
     suggestions: [],
     canGuess: true,
-    copyShare: copyText,
     modeLabel: currentMode.modeLabel,
     heroCopy: currentMode.heroCopy,
     restartLabel: currentMode.restartLabel,
@@ -145,7 +127,6 @@ async function start() {
     state.guessText = "";
     state.rows = [];
     state.status = "playing";
-    state.shareText = "";
     state.stats = loadStats(page);
     syncStats();
     persist();
@@ -193,7 +174,6 @@ async function start() {
     state.rows = nextRows;
     state.status = nextStatus;
     state.guessText = "";
-    state.shareText = nextStatus === "playing" ? "" : buildShareText({ status: nextStatus, rows: nextRows });
 
     persistStatsIfNeeded(previousStatus, nextStatus);
     syncStats();
@@ -216,7 +196,6 @@ async function start() {
       setGuessText,
       submitGuess,
       pickSuggestion,
-      copyShare: copyText,
     });
 
     // Re-focus l'input après le rendu pour éviter la perte de focus lors de la saisie
@@ -236,7 +215,6 @@ async function start() {
       .filter(Boolean)
       .map((character) => ({ character, comparison: compareGuess(character, state.answer) }));
     state.status = savedState.status || "playing";
-    state.shareText = state.status === "playing" ? "" : buildShareText({ status: state.status, rows: state.rows });
     syncStats();
   }
 

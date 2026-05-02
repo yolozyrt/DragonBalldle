@@ -3,10 +3,7 @@ import { createEl } from "../dom.js";
 export function renderResultBanner({
   status,
   answerName,
-  guessesUsed,
   maxGuesses,
-  shareText,
-  onCopyShare,
   modeLabel = "Mode classique",
   onRestart,
   restartLabel = "Rejouer",
@@ -24,7 +21,7 @@ export function renderResultBanner({
     banner.classList.add("banner-muted");
     banner.append(
       createEl("strong", { text: modeLabel }),
-      createEl("p", { text: `${maxGuesses} essais pour trouver le personnage Dragon Ball du jour.` }),
+      createEl("p", { text: "Devinez le personnage Dragon Ball du jour." }),
     );
     return banner;
   }
@@ -39,22 +36,19 @@ export function renderResultBanner({
   }
 
   banner.classList.add("banner-win");
-  banner.append(createEl("strong", { text: "Bravo" }), createEl("p", { text: `Trouvé en ${guessesUsed}/${maxGuesses} essais.` }));
+  const victoryCopy = createEl("div", { className: "victory-copy" });
+  const victoryArt = createEl("div", {
+    className: "victory-art",
+    attrs: { "aria-hidden": "true" },
+    text: "Photo à venir",
+  });
 
-  if (shareText) {
-    const shareBox = createEl("div", { className: "share-box" });
-    const textarea = createEl("textarea", { attrs: { readonly: "readonly", rows: "5" } });
-    textarea.value = shareText;
-    shareBox.append(textarea);
+  victoryCopy.append(
+    createEl("strong", { text: "Victoire" }),
+    createEl("p", { text: answerName ? `Vous avez trouvé ${answerName}.` : "Vous avez trouvé le personnage." }),
+  );
 
-    if (onCopyShare) {
-      const copyButton = createEl("button", { className: "guess-button copy-button", text: "Copier le texte à partager", attrs: { type: "button" } });
-      copyButton.addEventListener("click", onCopyShare);
-      shareBox.append(copyButton);
-    }
-
-    banner.append(shareBox);
-  }
+  banner.append(victoryCopy, victoryArt);
 
   if (restartButton) {
     banner.append(restartButton);

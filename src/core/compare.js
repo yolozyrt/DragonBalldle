@@ -1,8 +1,10 @@
 import { normalizeText } from "../data/normalize.js";
 
 function compareSimple(expected, guess) {
+  const normalizedExpected = expected !== null && expected !== undefined ? normalizeText(String(expected)) : "";
+  const normalizedGuess = guess !== null && guess !== undefined ? normalizeText(String(guess)) : "";
   return {
-    status: normalizeText(expected) === normalizeText(guess) ? "exact" : "none",
+    status: normalizedExpected === normalizedGuess ? "exact" : "none",
     value: guess,
   };
 }
@@ -21,6 +23,10 @@ function compareList(expected, guess) {
 }
 
 function compareYear(expected, guess) {
+  if (expected === null || expected === undefined || guess === null || guess === undefined) {
+    return { status: "none", value: guess };
+  }
+  
   if (guess === expected) {
     return { status: "exact", value: guess };
   }
@@ -36,5 +42,8 @@ export function compareGuess(guess, answer) {
     affiliations: compareList(answer.affiliations, guess.affiliations),
     alignment: compareSimple(answer.alignment, guess.alignment),
     firstAppearanceYear: compareYear(answer.firstAppearanceYear, guess.firstAppearanceYear),
+    seriePremiereAppearance: compareSimple(answer.seriePremiereAppearance, guess.seriePremiereAppearance),
+    episodePremiereAppearance: compareSimple(answer.episodePremiereAppearance, guess.episodePremiereAppearance),
+    image: compareSimple(answer.image, guess.image),
   };
 }
