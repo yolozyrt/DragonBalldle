@@ -12,12 +12,12 @@
   justify-content: center;
   height: 70px;
   padding: 0 20px;
-  background: linear-gradient(135deg, #110300 0%, #3d1200 40%, #110300 100%);
+  background: linear-gradient(135deg, #FFDAB9 0%, #FFE4B5 40%, #FFDAB9 100%);
   border-bottom: 2px solid var(--db-orange);
   box-shadow:
-    0 4px 30px rgba(255, 123, 0, 0.5),
-    0 0 60px rgba(255, 123, 0, 0.12),
-    inset 0 1px 0 rgba(255, 215, 0, 0.1);
+    0 4px 20px rgba(255, 218, 185, 0.3),
+    0 0 40px rgba(255, 218, 185, 0.1),
+    inset 0 1px 0 rgba(255, 215, 0, 0.2);
 }
 
 /* ─── LOGO ─── */
@@ -31,7 +31,7 @@
     0 0 6px #ffffff,
     0 0 14px var(--db-gold),
     0 0 30px var(--db-orange),
-    2px 2px 0 #5a2200;
+    2px 2px 0 #cccccc;
   transition: transform 0.2s ease;
   cursor: default;
 }
@@ -42,7 +42,7 @@
     0 0 8px #ffffff,
     0 0 20px var(--db-gold),
     0 0 50px var(--db-orange),
-    2px 2px 0 #5a2200;
+    2px 2px 0 #cccccc;
 }
 
 /* ─── ZONE DE JEU ─── */
@@ -60,21 +60,21 @@
 .guess-input {
   flex: 1;
   min-width: 0;
-  border: 2px solid rgba(255, 123, 0, 0.5);
+  border: 2px solid rgba(255, 218, 185, 0.5);
   border-radius: var(--radius-md);
-  background: rgba(5, 2, 15, 0.9);
-  color: #fff;
+  background: rgba(255, 228, 196, 0.8);
+  color: var(--text);
   padding: 14px 16px;
   font-size: 15px;
   outline: none;
   box-shadow:
-    0 0 12px rgba(255, 123, 0, 0.12),
-    inset 0 0 20px rgba(255, 123, 0, 0.03);
+    0 0 12px rgba(255, 218, 185, 0.12),
+    inset 0 0 20px rgba(255, 218, 185, 0.03);
   transition: all 0.3s ease;
 }
 
 .guess-input::placeholder {
-  color: rgba(255, 150, 50, 0.35);
+  color: rgba(100, 100, 100, 0.5);
   font-style: italic;
 }
 
@@ -83,7 +83,7 @@
   box-shadow:
     0 0 20px var(--db-orange),
     0 0 45px rgba(255, 215, 0, 0.25),
-    inset 0 0 25px rgba(255, 123, 0, 0.07);
+    inset 0 0 25px rgba(255, 218, 185, 0.07);
 }
 
 /* ─── BOUTON DEVINER ─── */
@@ -93,23 +93,23 @@
   padding: 0 22px;
   min-width: 110px;
   height: 52px;
-  background: linear-gradient(135deg, #5a1e00 0%, #a63d00 50%, #ff7b00 100%);
-  color: var(--db-gold);
+  background: linear-gradient(135deg, #FFE4B5 0%, #FFDAB9 50%, #FFEFD5 100%);
+  color: var(--db-dark);
   font-family: 'Bangers', 'Impact', cursive;
   font-size: 1.1rem;
   letter-spacing: 2px;
   text-transform: uppercase;
   cursor: pointer;
   box-shadow:
-    0 0 20px rgba(255, 123, 0, 0.45),
-    inset 0 1px 0 rgba(255, 215, 0, 0.15);
+    0 0 20px rgba(255, 218, 185, 0.3),
+    inset 0 1px 0 rgba(255, 215, 0, 0.2);
   transition: all 0.25s ease;
 }
 
 .guess-button:hover {
   transform: scale(1.06);
   border-color: var(--db-gold);
-  color: #fff;
+  color: var(--db-dark);
   box-shadow:
     0 0 30px var(--db-orange),
     0 0 60px rgba(255, 215, 0, 0.3);
@@ -142,10 +142,10 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  border: 1px solid rgba(255, 123, 0, 0.3);
+  border: 1px solid rgba(255, 218, 185, 0.3);
   border-radius: 14px;
-  background: rgba(40, 10, 0, 0.75);
-  color: #ffd9a0;
+  background: rgba(255, 228, 196, 0.9);
+  color: var(--text);
   padding: 12px 16px;
   text-align: left;
   cursor: pointer;
@@ -156,10 +156,10 @@
 .suggestion-item:hover,
 .suggestion-item:focus-visible {
   border-color: var(--db-gold);
-  background: rgba(80, 25, 0, 0.85);
-  color: #fff;
+  background: rgba(255, 218, 185, 0.8);
+  color: var(--text);
   padding-left: 20px;
-  box-shadow: 0 0 15px rgba(255, 123, 0, 0.35);
+  box-shadow: 0 0 15px rgba(255, 218, 185, 0.3);
 }
 
 .suggestion-meta {
@@ -183,8 +183,8 @@
 }
 
 .guess-table thead th {
-  background: linear-gradient(135deg, rgba(80, 20, 0, 0.95), rgba(50, 10, 0, 0.95));
-  color: var(--db-gold);
+  background: linear-gradient(135deg, rgba(255, 218, 185, 0.9), rgba(255, 228, 181, 0.9));
+  color: var(--db-dark);
   font-family: 'Bangers', 'Impact', cursive;
   font-size: 13px;
   font-weight: 400;
@@ -198,7 +198,7 @@
 .guess-table td {
   text-align: left;
   padding: 14px 16px;
-  border-bottom: 1px solid rgba(255, 123, 0, 0.08);
+  border-bottom: 1px solid rgba(255, 218, 185, 0.2);
   vertical-align: middle;
 }
 
@@ -207,7 +207,7 @@
 }
 
 .guess-table tbody tr:hover {
-  background: rgba(255, 123, 0, 0.06);
+  background: rgba(255, 218, 185, 0.1);
 }
 
 /* ─── FEEDBACK EXACT (or — bonne réponse) ─── */
@@ -216,28 +216,28 @@
 }
 
 .feedback-exact {
-  background: linear-gradient(135deg, rgba(180, 100, 0, 0.35), rgba(255, 165, 0, 0.15));
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 218, 185, 0.1));
   color: var(--db-gold);
-  box-shadow: inset 0 0 18px rgba(255, 165, 0, 0.2);
+  box-shadow: inset 0 0 18px rgba(255, 215, 0, 0.15);
 }
 
 /* ─── FEEDBACK PARTIAL (orange — presque) ─── */
 .feedback-partial {
-  background: rgba(255, 90, 0, 0.18);
-  color: #ffaa60;
-  box-shadow: inset 0 0 12px rgba(255, 90, 0, 0.2);
+  background: rgba(255, 218, 185, 0.25);
+  color: #daa520;
+  box-shadow: inset 0 0 12px rgba(255, 218, 185, 0.2);
 }
 
 /* ─── FEEDBACK NONE (rouge sombre — faux) ─── */
 .feedback-none {
-  background: rgba(100, 5, 5, 0.3);
-  color: rgba(255, 100, 100, 0.65);
+  background: rgba(255, 204, 204, 0.3);
+  color: rgba(255, 0, 0, 0.7);
 }
 
 /* ─── ÉTAT VIDE ─── */
 .empty-state {
   padding: 28px 16px;
-  color: rgba(255, 123, 0, 0.4);
+  color: rgba(100, 100, 100, 0.6);
   text-align: center;
   font-style: italic;
   font-size: 14px;
@@ -263,14 +263,14 @@
   width: fit-content;
   border-radius: 999px;
   padding: 7px 16px;
-  background: radial-gradient(circle at 30% 30%, #ff9500, #c45200, #7a2e00);
+  background: radial-gradient(circle at 30% 30%, #FFDAB9, #FFE4B5, #FFEFD5);
   border: 2px solid var(--db-gold);
-  color: var(--db-gold);
+  color: var(--db-dark);
   font-family: 'Bangers', 'Impact', cursive;
   font-size: 1rem;
   letter-spacing: 2px;
   box-shadow:
-    0 0 15px rgba(255, 123, 0, 0.55),
+    0 0 15px rgba(255, 218, 185, 0.4),
     0 0 35px rgba(255, 215, 0, 0.2);
 }
 
