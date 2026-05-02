@@ -1,20 +1,35 @@
+/* ================================================
+   DRAGON BALL·DLE — main.css
+   ================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+
 :root {
   color-scheme: dark;
-  --bg: #07111f;
-  --bg-alt: #0b1830;
-  --card: rgba(11, 18, 34, 0.88);
-  --card-strong: rgba(15, 24, 44, 0.96);
-  --border: rgba(255, 255, 255, 0.12);
-  --text: #f4f7ff;
-  --muted: #a7b2cf;
-  --accent: #ef8d32;
-  --accent-2: #f7b14f;
-  --exact: #2ec27e;
-  --partial: #f1a53c;
-  --none: #66708b;
-  --shadow: 0 28px 90px rgba(0, 0, 0, 0.42);
-  --radius-lg: 26px;
-  --radius-md: 16px;
+
+  /* ─── Couleurs Dragon Ball ─── */
+  --bg:          #07030f;
+  --bg-alt:      #110500;
+  --card:        rgba(20, 8, 2, 0.88);
+  --card-strong: rgba(25, 10, 2, 0.96);
+  --border:      rgba(255, 123, 0, 0.2);
+  --text:        #f4f7ff;
+  --muted:       #c4935a;
+  --accent:      #ff7b00;
+  --accent-2:    #ffd700;
+  --exact:       #ffd700;
+  --partial:     #ff7b00;
+  --none:        #6b1010;
+  --shadow:      0 28px 90px rgba(0, 0, 0, 0.6);
+  --radius-lg:   26px;
+  --radius-md:   16px;
+
+  /* ─── Variables Dragon Ball ─── */
+  --db-orange:      #ff7b00;
+  --db-gold:        #ffd700;
+  --db-dark:        #07030f;
+  --db-glow-orange: rgba(255, 123, 0, 0.7);
+  --db-glow-gold:   rgba(255, 215, 0, 0.5);
 }
 
 * {
@@ -30,9 +45,9 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   color: var(--text);
   background:
-    radial-gradient(circle at top, rgba(239, 141, 50, 0.24), transparent 30%),
-    radial-gradient(circle at 90% 12%, rgba(46, 194, 126, 0.16), transparent 24%),
-    linear-gradient(180deg, var(--bg) 0%, #050812 100%);
+    radial-gradient(circle at top,     rgba(255, 123, 0, 0.18), transparent 30%),
+    radial-gradient(circle at 90% 12%, rgba(255, 50,  0, 0.10), transparent 24%),
+    linear-gradient(180deg, #0a0300 0%, #050008 100%);
 }
 
 a {
@@ -49,7 +64,33 @@ button {
   cursor: pointer;
 }
 
+/* ─── GOKU & VEGETA en arrière-plan ─── */
+.bg-character {
+  position: fixed;
+  bottom: 0;
+  z-index: 0;
+  height: 80vh;
+  opacity: 0.35;
+  pointer-events: none;
+  /* Masque le bas de l'image pour un fondu naturel */
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, black 25%);
+  mask-image: linear-gradient(to top, transparent 0%, black 25%);
+}
+
+.bg-left {
+  left: -20px;
+}
+
+.bg-right {
+  right: -20px;
+  /* Retourne Vegeta pour qu'il regarde vers le centre */
+  transform: scaleX(-1);
+}
+
+/* ─── Tout le contenu passe au-dessus des personnages ─── */
 .app-shell {
+  position: relative;
+  z-index: 1;
   width: min(1120px, calc(100% - 24px));
   margin: 0 auto;
   padding: 32px 0 56px;
@@ -79,9 +120,17 @@ button {
 }
 
 .hero-title {
+  font-family: 'Bangers', 'Impact', cursive;
   font-size: clamp(2.1rem, 4vw, 3.75rem);
+  font-weight: 400;
+  letter-spacing: 3px;
   line-height: 0.95;
-  font-weight: 800;
+  color: var(--db-gold);
+  text-shadow:
+    0 0 6px #fff,
+    0 0 20px var(--db-gold),
+    0 0 40px var(--db-orange),
+    2px 2px 0 #5a2200;
 }
 
 .hero-copy {
@@ -110,11 +159,11 @@ button {
 }
 
 .banner-win {
-  border-color: rgba(46, 194, 126, 0.4);
+  border-color: rgba(255, 215, 0, 0.5);
 }
 
 .banner-lose {
-  border-color: rgba(241, 165, 60, 0.4);
+  border-color: rgba(255, 123, 0, 0.4);
 }
 
 .share-box {
@@ -128,7 +177,7 @@ button {
   resize: vertical;
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
-  background: rgba(7, 12, 22, 0.82);
+  background: rgba(7, 2, 0, 0.82);
   color: var(--text);
   padding: 14px;
 }
@@ -160,11 +209,12 @@ button {
   padding: 8px 12px;
   border: 1px solid var(--border);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 123, 0, 0.04);
 }
 
 .mode-links a:hover {
-  border-color: rgba(239, 141, 50, 0.55);
+  border-color: rgba(255, 215, 0, 0.55);
+  color: var(--db-gold);
 }
 
 @media (max-width: 720px) {
@@ -181,5 +231,11 @@ button {
 
   .game-footer {
     flex-direction: column;
+  }
+
+  /* Cache les personnages sur mobile pour ne pas gêner */
+  .bg-character {
+    height: 40vh;
+    opacity: 0.2;
   }
 }

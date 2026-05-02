@@ -39,7 +39,7 @@ export async function loadCharacters() {
 
     charactersPromise = hasSupabaseConfig
       ? loadCharactersFromSupabase().catch(() => localCharacters)
-      : fetch(DATA_URLS.characters)
+      : fetch(DATA_URLS.characters, { cache: "no-store" })
           .then((response) => {
             if (!response.ok) {
               throw new Error("Unable to load characters dataset");
