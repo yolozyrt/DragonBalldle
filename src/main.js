@@ -161,6 +161,16 @@ async function start() {
       pickSuggestion,
       copyShare: copyText,
     });
+
+    // Re-focus l'input après le rendu pour éviter la perte de focus lors de la saisie
+    if (state.canGuess) {
+      const guessInput = qs(".guess-input");
+      if (guessInput) {
+        guessInput.focus();
+        // Placer le curseur à la fin du texte
+        guessInput.setSelectionRange(state.guessText.length, state.guessText.length);
+      }
+    }
   }
 
   syncStats();
