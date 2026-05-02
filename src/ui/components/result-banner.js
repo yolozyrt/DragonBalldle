@@ -3,6 +3,7 @@ import { createEl } from "../dom.js";
 export function renderResultBanner({
   status,
   answerName,
+  answerImage,
   maxGuesses,
   modeLabel = "Mode classique",
   onRestart,
@@ -36,19 +37,30 @@ export function renderResultBanner({
   }
 
   banner.classList.add("banner-win");
+  const victoryHeader = createEl("div", { className: "victory-header" });
+  const victoryBody = createEl("div", { className: "victory-body" });
   const victoryCopy = createEl("div", { className: "victory-copy" });
-  const victoryArt = createEl("div", {
-    className: "victory-art",
-    attrs: { "aria-hidden": "true" },
-    text: "Photo à venir",
-  });
+  const victoryArt = createEl("div", { className: "victory-art" });
 
+  if (answerImage) {
+    victoryArt.append(
+      createEl("img", {
+        className: "victory-image",
+        attrs: { src: answerImage, alt: answerName || "Personnage trouvé", loading: "eager" },
+      }),
+    );
+  } else {
+    victoryArt.append(createEl("span", { text: "Photo indisponible" }));
+  }
+
+  victoryHeader.append(createEl("strong", { text: "Victoire" }));
   victoryCopy.append(
-    createEl("strong", { text: "Victoire" }),
-    createEl("p", { text: answerName ? `Vous avez trouvé ${answerName}.` : "Vous avez trouvé le personnage." }),
+    createEl("p", { text: "Tu as trouvé" }),
+    createEl("strong", { text: answerName || "le personnage" }),
   );
 
-  banner.append(victoryCopy, victoryArt);
+  victoryBody.append(victoryArt, victoryCopy);
+  banner.append(victoryHeader, victoryBody);
 
   if (restartButton) {
     banner.append(restartButton);

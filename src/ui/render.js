@@ -76,6 +76,7 @@ export function renderClassic(app, state) {
   const banner = renderResultBanner({
     status: state.status,
     answerName: state.status === "won" || state.status === "lost" ? state.answer.name : undefined,
+    answerImage: state.status === "won" ? state.answer.image : undefined,
     maxGuesses: MAX_GUESSES,
     modeLabel: state.modeLabel,
     onRestart: state.onRestart,
