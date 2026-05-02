@@ -2,7 +2,7 @@
   "name": "dragonballdle",
   "version": "1.0.0",
   "private": true,
-  "description": "Dragon Ball daily guessing game MVP built with plain HTML, CSS, and JavaScript.",
+  "description": "Jeu quotidien de propositions Dragon Ball (MVP) construit avec HTML, CSS et JavaScript.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

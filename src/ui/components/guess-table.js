@@ -36,12 +36,12 @@ export function renderGuessTable(rows) {
   table.innerHTML = `
     <thead>
       <tr>
-        <th>Name</th>
+        <th>Nom</th>
         <th>Race</th>
         <th>Saga</th>
         <th>Affiliation</th>
-        <th>Alignment</th>
-        <th>First appearance year</th>
+        <th>Alignement</th>
+        <th>Année de première apparition</th>
       </tr>
     </thead>
   `;
@@ -53,7 +53,7 @@ export function renderGuessTable(rows) {
     emptyRow.append(
       createEl("td", {
         className: "empty-state",
-        text: "No guesses yet. Start with a character and compare the clues.",
+        text: "Aucune proposition pour l'instant. Commencez par un personnage pour comparer les indices.",
         attrs: { colSpan: "6" },
       }),
     );

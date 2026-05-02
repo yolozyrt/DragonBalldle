@@ -10,6 +10,3 @@ export const STORAGE_KEYS = {
   state: (dateKey) => `dbdle:${MODE}:${dateKey}`,
   stats: "dbdle:stats",
 };
-export const DATA_URLS = {
-  characters: "/data/characters.json",
-};

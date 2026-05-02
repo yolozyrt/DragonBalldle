@@ -22,7 +22,6 @@ npm run build
 - `modes/quote.html` : futur mode
 - `modes/silhouette.html` : futur mode
 - `assets/css/` : styles globaux et composants
-- `data/characters.json` : dataset persos
 - `src/` : logique, accès données, rendu et composants UI
 - `supabase/schema.sql` : schéma SQL pour migrer les persos dans Supabase
 
@@ -41,4 +40,4 @@ VITE_SUPABASE_URL=https://your-project-ref.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-public-key
 ```
 
-Si ces variables ne sont pas définies, l'app retombe automatiquement sur le dataset JSON local.
+Ces variables sont obligatoires pour charger les persos depuis la table `characters` de Supabase.

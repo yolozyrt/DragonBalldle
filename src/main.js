@@ -24,7 +24,7 @@ function buildShareText({ status, rows }) {
     })
     .join(" ");
 
-  return [`DBDle Classic ${dateKey}`, outcome, clueRow].filter(Boolean).join("\n");
+  return [`DBDle Classique ${dateKey}`, outcome, clueRow].filter(Boolean).join("\n");
 }
 
 function updateStatsOnFinish(currentStats, status) {
@@ -47,11 +47,11 @@ async function start() {
 
   if (page !== "classic") {
     const labels = {
-      quote: "Quote mode is planned for a future update.",
-      silhouette: "Silhouette mode is planned for a future update.",
+      quote: "Le mode citation est prévu pour une future mise à jour.",
+      silhouette: "Le mode silhouette est prévu pour une future mise à jour.",
     };
 
-    renderPlaceholder(app, labels[page] || "Mode scaffold ready");
+    renderPlaceholder(app, labels[page] || "Mode prêt");
     return;
   }
 
@@ -187,6 +187,6 @@ async function start() {
 }
 
 start().catch((error) => {
-  app.innerHTML = `<section class="panel"><strong>Unable to start the game.</strong><p>${error.message}</p></section>`;
+  app.innerHTML = `<section class="panel"><strong>Impossible de démarrer le jeu.</strong><p>${error.message}</p></section>`;
   console.error(error);
 });

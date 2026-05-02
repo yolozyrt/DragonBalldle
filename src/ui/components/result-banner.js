@@ -6,20 +6,20 @@ export function renderResultBanner({ status, answerName, guessesUsed, maxGuesses
   if (status === "playing") {
     banner.classList.add("banner-muted");
     banner.append(
-      createEl("strong", { text: "Classic mode" }),
-      createEl("p", { text: `${maxGuesses} tries to find the daily Dragon Ball character.` }),
+      createEl("strong", { text: "Mode classique" }),
+      createEl("p", { text: `${maxGuesses} essais pour trouver le personnage Dragon Ball du jour.` }),
     );
     return banner;
   }
 
   if (status === "lost") {
     banner.classList.add("banner-lose");
-    banner.append(createEl("strong", { text: "Out of guesses" }), createEl("p", { text: `The answer was ${answerName}.` }));
+    banner.append(createEl("strong", { text: "Plus d'essais" }), createEl("p", { text: `La réponse était ${answerName}.` }));
     return banner;
   }
 
   banner.classList.add("banner-win");
-  banner.append(createEl("strong", { text: "Correct" }), createEl("p", { text: `Solved in ${guessesUsed}/${maxGuesses} guesses.` }));
+  banner.append(createEl("strong", { text: "Bravo" }), createEl("p", { text: `Trouvé en ${guessesUsed}/${maxGuesses} essais.` }));
 
   if (shareText) {
     const shareBox = createEl("div", { className: "share-box" });
@@ -28,7 +28,7 @@ export function renderResultBanner({ status, answerName, guessesUsed, maxGuesses
     shareBox.append(textarea);
 
     if (onCopyShare) {
-      const copyButton = createEl("button", { className: "guess-button copy-button", text: "Copy share text", attrs: { type: "button" } });
+      const copyButton = createEl("button", { className: "guess-button copy-button", text: "Copier le texte à partager", attrs: { type: "button" } });
       copyButton.addEventListener("click", onCopyShare);
       shareBox.append(copyButton);
     }

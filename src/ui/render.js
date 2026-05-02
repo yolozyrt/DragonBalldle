@@ -8,17 +8,17 @@ function buildHeader() {
   const header = createEl("header", { className: "hero-card" });
   header.append(
     createEl("p", { className: "eyebrow", text: APP_NAME }),
-    createEl("h1", { className: "hero-title", text: "Classic mode" }),
+    createEl("h1", { className: "hero-title", text: "Mode classique" }),
     createEl("p", {
       className: "hero-copy",
-      text: "Guess the daily Dragon Ball character. Autocomplete works with names and aliases, and each clue tells you how close you are.",
+      text: "Devinez le personnage Dragon Ball du jour. L'autocomplétion fonctionne avec les noms et alias, et chaque indice indique votre proximité.",
     }),
     createEl("nav", {
       className: "mode-links",
       html: `
-        <a href="/index.html">Classic</a>
-        <a href="/modes/classic.html">Classic page</a>
-        <a href="/modes/quote.html">Quote</a>
+        <a href="/index.html">Classique</a>
+        <a href="/modes/classic.html">Page classique</a>
+        <a href="/modes/quote.html">Citation</a>
         <a href="/modes/silhouette.html">Silhouette</a>
       `,
     }),
@@ -29,9 +29,9 @@ function buildHeader() {
 function buildFooter({ stats, guessesRemaining }) {
   const footer = createEl("footer", { className: "game-footer" });
   footer.append(
-    createEl("div", { html: `<strong>${guessesRemaining}</strong> guesses left` }),
+    createEl("div", { html: `<strong>${guessesRemaining}</strong> essais restants` }),
     createEl("div", {
-      text: `Stats: ${stats.wins} win${stats.wins === 1 ? "" : "s"} / ${stats.played} played`,
+      text: `Statistiques : ${stats.wins} victoire${stats.wins === 1 ? "" : "s"} / ${stats.played} parties`,
     }),
   );
   return footer;
@@ -43,11 +43,11 @@ export function renderPlaceholder(app, title) {
   const hero = buildHeader();
   const panel = createEl("section", { className: "panel placeholder-panel" });
   panel.append(
-    createEl("span", { className: "placeholder-badge", text: "Coming soon" }),
+    createEl("span", { className: "placeholder-badge", text: "Bientôt disponible" }),
     createEl("h2", { className: "hero-title", text: title }),
     createEl("p", {
       className: "hero-copy",
-      text: "This mode is scaffolded now so the project can grow without changing the architecture.",
+      text: "Ce mode est provisionnel pour permettre l'évolution du projet sans modifier l'architecture.",
     }),
   );
 

@@ -8,7 +8,7 @@ export function renderGuessInput({ value, suggestions, disabled, onInput, onSubm
     className: "guess-input",
     attrs: {
       type: "text",
-      placeholder: "Type a character name or alias",
+      placeholder: "Tapez le nom ou un alias du personnage",
       value,
       autocomplete: "off",
       disabled: disabled ? "disabled" : null,
@@ -26,7 +26,7 @@ export function renderGuessInput({ value, suggestions, disabled, onInput, onSubm
 
   const button = createEl("button", {
     className: "guess-button",
-    text: "Guess",
+    text: "Proposer",
     attrs: { type: "button", disabled: disabled ? "disabled" : null },
   });
   button.addEventListener("click", () => onSubmit());
