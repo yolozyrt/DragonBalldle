@@ -5,6 +5,7 @@
   "description": "Jeu quotidien de propositions Dragon Ball (MVP) construit avec HTML, CSS et JavaScript.",
   "scripts": {
     "dev": "vite",
+    "start": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
