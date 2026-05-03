@@ -10,9 +10,9 @@
   /* ─── Couleurs Dragon Ball ─── */
   --bg:          #fff8dc;
   --bg-alt:      #f5deb3;
-  --card:        rgba(255, 228, 196, 0.7);
-  --card-strong: rgba(255, 218, 185, 0.8);
-  --border:      rgba(255, 218, 185, 0.3);
+  --card:        rgba(255, 228, 196, 0.85);
+  --card-strong: rgba(255, 218, 185, 0.9);
+  --border:      #FFDAB9;
   --text:        #8b4513;
   --muted:       #daa520;
   --accent:      #FFDAB9;
@@ -99,7 +99,7 @@ button {
 .app-shell {
   position: relative;
   z-index: 1;
-  width: min(1120px, calc(100% - 24px));
+  width: min(750px, calc(100% - 32px));
   margin: 0 auto;
   padding: 32px 0 56px;
 }
@@ -107,16 +107,28 @@ button {
 .hero-card,
 .panel,
 .game-footer {
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: linear-gradient(135deg, rgba(255, 228, 196, 0.9) 0%, rgba(255, 218, 185, 0.8) 100%);
+  border: 4px solid #FFDAB9;
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow);
+  box-shadow: 
+    /* ombre externe marquée */
+    0 12px 40px rgba(0, 0, 0, 0.3),
+    0 8px 24px rgba(0, 0, 0, 0.15),
+    /* lueur orange */
+    0 0 30px rgba(255, 218, 185, 0.5),
+    /* relief interne en haut */
+    inset 0 2px 0 rgba(255, 255, 255, 0.6),
+    /* ombre interne en bas */
+    inset 0 -2px 4px rgba(139, 69, 19, 0.1);
   backdrop-filter: blur(12px);
+  position: relative;
 }
 
 .hero-card {
   padding: 28px;
   margin-bottom: 18px;
+  background: linear-gradient(135deg, rgba(255, 228, 196, 0.95) 0%, rgba(255, 218, 185, 0.85) 100%);
+  border: 4px solid #FFDAB9;
 }
 
 .eyebrow {
@@ -135,7 +147,8 @@ button {
   line-height: 0.95;
   color: var(--db-gold);
   text-shadow:
-    0 0 6px #fff,
+    -2px -2px 0 rgba(0, 0, 0, 0.2),
+    0 0 8px #fff,
     0 0 20px var(--db-gold),
     0 0 40px var(--db-orange),
     2px 2px 0 #5a2200;
@@ -149,8 +162,8 @@ button {
 }
 
 .panel {
-  padding: 18px;
-  margin-bottom: 18px;
+  padding: 24px;
+  margin-bottom: 20px;
 }
 
 .result-banner {
@@ -288,7 +301,7 @@ button {
 
 @media (max-width: 720px) {
   .app-shell {
-    width: min(100% - 16px, 1120px);
+    width: min(100% - 16px, 750px);
     padding-top: 18px;
   }
 

@@ -28,6 +28,22 @@ function renderYear(status, value) {
   return String(value);
 }
 
+function renderEpisode(status, value) {
+  if (status === "exact") {
+    return String(value);
+  }
+
+  if (status === "higher") {
+    return `${value} ↑`;
+  }
+
+  if (status === "lower") {
+    return `${value} ↓`;
+  }
+
+  return String(value || "-");
+}
+
 export function renderGuessTable(rows) {
   const wrapper = createEl("section", { className: "panel table-card" });
   const scroll = createEl("div", { className: "table-scroll" });
@@ -83,7 +99,7 @@ export function renderGuessTable(rows) {
         createEl("td", { className: fieldClass(comparison.alignment.status), text: character.alignment }),
         createEl("td", { className: fieldClass(comparison.firstAppearanceYear.status), text: renderYear(comparison.firstAppearanceYear.status, comparison.firstAppearanceYear.value) }),
         createEl("td", { className: fieldClass(comparison.seriePremiereAppearance.status), text: String(comparison.seriePremiereAppearance.value || "-") }),
-        createEl("td", { className: fieldClass(comparison.episodePremiereAppearance.status), text: String(comparison.episodePremiereAppearance.value || "-") }),
+        createEl("td", { className: fieldClass(comparison.episodePremiereAppearance.status), text: renderEpisode(comparison.episodePremiereAppearance.status, comparison.episodePremiereAppearance.value) }),
       );
       tbody.append(row);
     });

@@ -34,6 +34,18 @@ function compareYear(expected, guess) {
   return { status: guess < expected ? "higher" : "lower", value: guess };
 }
 
+function compareEpisode(expected, guess) {
+  if (expected === null || expected === undefined || guess === null || guess === undefined) {
+    return { status: "none", value: guess };
+  }
+  
+  if (guess === expected) {
+    return { status: "exact", value: guess };
+  }
+
+  return { status: guess < expected ? "higher" : "lower", value: guess };
+}
+
 export function compareGuess(guess, answer) {
   return {
     name: compareSimple(answer.name, guess.name),
@@ -43,7 +55,7 @@ export function compareGuess(guess, answer) {
     alignment: compareSimple(answer.alignment, guess.alignment),
     firstAppearanceYear: compareYear(answer.firstAppearanceYear, guess.firstAppearanceYear),
     seriePremiereAppearance: compareSimple(answer.seriePremiereAppearance, guess.seriePremiereAppearance),
-    episodePremiereAppearance: compareSimple(answer.episodePremiereAppearance, guess.episodePremiereAppearance),
+    episodePremiereAppearance: compareEpisode(answer.episodePremiereAppearance, guess.episodePremiereAppearance),
     image: compareSimple(answer.image, guess.image),
   };
 }

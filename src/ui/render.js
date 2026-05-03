@@ -92,9 +92,16 @@ export function renderClassic(app, state) {
     onPick: state.pickSuggestion,
   });
 
-  const table = renderGuessTable(state.rows);
   const footer = buildFooter({ stats: state.stats, guessLabel: state.guessLabel || `${state.guessesRemaining} essais restants`, isInfinity: state.isInfinity });
 
-  layout.append(banner, guessInput, table, footer);
+  layout.append(banner, guessInput);
+  
+  // N'afficher la table que s'il y a des guesses
+  if (state.rows.length > 0) {
+    const table = renderGuessTable(state.rows);
+    layout.append(table);
+  }
+  
+  layout.append(footer);
   app.append(hero, layout);
 }
