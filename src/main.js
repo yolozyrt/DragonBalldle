@@ -109,10 +109,9 @@ async function start() {
     }
 
     state.countdownLabel = formatDuration(nextResetAt - Date.now());
-    const countdownNode = qs(".daily-reset-countdown");
-    if (countdownNode) {
-      countdownNode.textContent = state.countdownLabel;
-    }
+    document.querySelectorAll("[data-countdown-slot]").forEach((node) => {
+      node.textContent = state.countdownLabel;
+    });
   }
 
   function resetClassicGameForNewDay() {

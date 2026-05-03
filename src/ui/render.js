@@ -102,7 +102,7 @@ function buildHeader({
       resultContainer.append(
         createEl("p", {
           className: "daily-reset-note daily-reset-note--victory",
-          html: `Nouveau personnage dans <strong class="daily-reset-countdown">${countdownLabel}</strong>`,
+          html: `Nouveau personnage dans <strong class="daily-reset-countdown" data-countdown-slot="hero">${countdownLabel}</strong>`,
         }),
       );
     }
@@ -119,29 +119,80 @@ function buildHeader({
 
 function buildFooter({ stats, guessLabel, isInfinity, countdownLabel }) {
   const footer = createEl("footer", { className: "game-footer" });
+  const icon = (path) => `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="${path}"/></svg>`;
 
-  if (isInfinity) {
-    footer.append(
-      createEl("div", { html: `<strong>${guessLabel}</strong>` }),
+  const metrics = isInfinity
+    ? [
+        {
+          icon: icon("M7 4h10v3h3v4c0 2.8-1.8 5.1-4.5 5.8A4.5 4.5 0 0 1 11 19h2v2H7v-2h2a4.5 4.5 0 0 1-4.5-4.2C1.8 16.1 0 13.8 0 11V7h3V4h4zm1 3H5v2c0 1.7 1.1 3.1 2.7 3.6l.3.1V7zm10 0h-3v5.7l.3-.1c1.6-.5 2.7-1.9 2.7-3.6V7z"),
+          label: "Propositions",
+          value: guessLabel,
+        },
+        {
+          icon: icon("M3 5h18v13H7l-4 4V5zm4 4h10v2H7V9zm0 4h7v2H7v-2z"),
+          label: "Parties jouées",
+          value: String(stats.played),
+        },
+        {
+          icon: icon("M11 2l2.8 5.7L20 9l-4.5 4.4 1.1 6.2L11 17.9 5.4 19.6l1.1-6.2L2 9l6.2-1.3L11 2z"),
+          label: "Erreurs totales",
+          value: String(stats.totalErrors || 0),
+        },
+      ]
+    : [
+        {
+          icon: icon("M12 2 4 6v6c0 5 3.4 9.7 8 10 4.6-.3 8-5 8-10V6l-8-4zm-1 13-3.5-3.5 1.4-1.4L11 12.2l4.1-4.1 1.4 1.4L11 15z"),
+          label: "Victoires",
+          value: `${stats.wins}`,
+        },
+        {
+          icon: icon("M5 3h14v4H5V3zm0 6h14v12H5V9zm2 2v8h10v-8H7z"),
+          label: "Parties jouées",
+          value: String(stats.played),
+        },
+        {
+          icon: icon("M12 2a6 6 0 0 0-6 6c0 4.5 6 10 6 10s6-5.5 6-10a6 6 0 0 0-6-6zm0 8.5A2.5 2.5 0 1 1 12 5a2.5 2.5 0 0 1 0 5.5z"),
+          label: "Prochain perso",
+          value: countdownLabel || "00:00:00",
+          countdown: true,
+        },
+      ];
+
+  const dashboard = createEl("div", { className: "footer-dashboard" });
+  const metricsGrid = createEl("div", { className: "footer-metrics" });
+
+  metrics.forEach(({ icon: svg, label, value, countdown = false }) => {
+    const card = createEl("div", { className: "footer-metric" });
+    const valueClass = countdown ? "footer-metric-value daily-reset-countdown" : "footer-metric-value";
+    card.append(
+      createEl("span", { className: "footer-metric-icon", html: svg }),
+      createEl("span", { className: "footer-metric-label", text: label }),
+      createEl("strong", { className: valueClass, text: value, attrs: countdown ? { "data-countdown-slot": "footer" } : {} }),
     );
-    footer.append(
-      createEl("div", {
-        text: `Parties jouées : ${stats.played}`,
-      }),
-      createEl("div", {
-        text: `Erreurs totales : ${stats.totalErrors || 0}`,
-      }),
-    );
-  } else {
-    footer.append(
-      createEl("div", {
-        html: `<strong class="daily-reset-countdown">${countdownLabel || "00:00:00"}</strong> avant le prochain personnage`,
-      }),
-      createEl("div", {
-        text: `Statistiques : ${stats.wins} victoire${stats.wins === 1 ? "" : "s"} / ${stats.played} parties`,
-      }),
-    );
-  }
+    metricsGrid.append(card);
+  });
+
+  const contactButton = createEl("button", {
+    className: "footer-contact-button",
+    text: "Nous contacter",
+    attrs: { type: "button", title: "Bientôt disponible" },
+  });
+  contactButton.addEventListener("click", (event) => {
+    event.preventDefault();
+  });
+
+  dashboard.append(
+    createEl("div", {
+      className: "footer-title-block",
+      html: `<span class="footer-kicker">Tableau de bord</span><strong>${isInfinity ? "Mode infini" : "Mode classique"}</strong>`,
+    }),
+    metricsGrid,
+  );
+
+  const actions = createEl("div", { className: "footer-actions" });
+  actions.append(contactButton);
+
+  footer.append(dashboard, actions);
 
   return footer;
 }
