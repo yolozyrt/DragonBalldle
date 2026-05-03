@@ -10,18 +10,31 @@ import { renderClassic, renderPlaceholder } from "./ui/render.js";
 
 const app = qs("#app");
 const page = document.body.dataset.page || "classic";
-const dateKey = toUtcDateKey(new Date());
+let dateKey = toUtcDateKey(new Date());
+
+function getNextUtcMidnight(date = new Date()) {
+  return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + 1);
+}
+
+function formatDuration(milliseconds) {
+  const totalSeconds = Math.max(0, Math.ceil(milliseconds / 1000));
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  return [hours, minutes, seconds].map((value) => String(value).padStart(2, "0")).join(":");
+}
 const modeConfig = {
   classic: {
-    modeLabel: "Mode classique",
+    modeLabel: "Devine le Guerrier du jour",
     heroCopy:
-      "Devinez le personnage Dragon Ball du jour. L'autocomplétion fonctionne avec les noms et alias, et chaque indice indique votre proximité.",
+      "Devinez le personnage Dragon Ball du jour. Le même personnage est partagé pour tout le monde et change à 00:00 UTC.",
     stateKey: dateKey,
     getAnswer: (characters) => getDailyAnswer(dateKey, characters),
     restartLabel: null,
   },
   infinity: {
-    modeLabel: "Mode Infinity",
+    modeLabel: "Devine le Guerrier",
     heroCopy:
       "Même principe que le mode classique, mais chaque victoire vous propose un nouveau personnage aléatoire sans attendre le lendemain.",
     stateKey: "current",
@@ -52,6 +65,8 @@ function updateStatsOnFinish(currentStats, status, guessCount) {
 async function start() {
   const characters = await loadCharacters();
   let restartTimer = null;
+  let countdownTimer = null;
+  let nextResetAt = getNextUtcMidnight();
 
   if (!modeConfig[page]) {
     const labels = {
@@ -85,7 +100,57 @@ async function start() {
     restartLabel: currentMode.restartLabel,
     onRestart: page === "infinity" ? restartGame : null,
     isInfinity: isInfinityMode,
+    countdownLabel: isInfinityMode ? null : formatDuration(nextResetAt - Date.now()),
   };
+
+  function updateCountdownLabel() {
+    if (isInfinityMode) {
+      return;
+    }
+
+    state.countdownLabel = formatDuration(nextResetAt - Date.now());
+    const countdownNode = qs(".daily-reset-countdown");
+    if (countdownNode) {
+      countdownNode.textContent = state.countdownLabel;
+    }
+  }
+
+  function resetClassicGameForNewDay() {
+    if (page !== "classic") {
+      return;
+    }
+
+    dateKey = toUtcDateKey(new Date());
+    currentMode.stateKey = dateKey;
+    nextResetAt = getNextUtcMidnight();
+
+    const nextAnswer = currentMode.getAnswer(characters);
+    state.answer = nextAnswer;
+    state.answerId = nextAnswer.id;
+    state.guessText = "";
+    state.rows = [];
+    state.status = "playing";
+    state.guessesRemaining = MAX_GUESSES;
+    state.guessCount = 0;
+    state.suggestions = [];
+    state.canGuess = true;
+    updateCountdownLabel();
+    persist();
+    render();
+  }
+
+  function tickCountdown() {
+    if (isInfinityMode) {
+      return;
+    }
+
+    if (Date.now() >= nextResetAt) {
+      resetClassicGameForNewDay();
+      return;
+    }
+
+    updateCountdownLabel();
+  }
 
   function syncStats() {
     state.guessCount = state.rows.length;
@@ -219,7 +284,13 @@ async function start() {
   }
 
   syncStats();
+  updateCountdownLabel();
   render();
+
+  if (!isInfinityMode) {
+    tickCountdown();
+    countdownTimer = window.setInterval(tickCountdown, 1000);
+  }
 
   persist();
 

@@ -5,8 +5,9 @@ import { renderGuessTable } from "./components/guess-table.js";
 import { renderResultBanner } from "./components/result-banner.js";
 
 function buildHeader({
-  modeLabel = "Mode classique",
+  modeLabel = "Devine le Guerrier du jour",
   heroCopy = "Devinez le personnage Dragon Ball du jour. L'autocomplétion fonctionne avec les noms et alias, et chaque indice indique votre proximité.",
+  countdownLabel,
   status,
   answerName,
   answerImage,
@@ -33,7 +34,7 @@ function buildHeader({
     {
       href: "/modes/infinity.html",
       image: "/assets/images/Gemini_Generated_Image_193lql193lql193l-removebg-preview.png",
-      label: "Mode Infinity",
+      label: "Devine le Guerrier",
     },
     {
       href: "/modes/quote.html",
@@ -97,6 +98,15 @@ function buildHeader({
       resultContainer.append(restartButton);
     }
 
+    if (countdownLabel) {
+      resultContainer.append(
+        createEl("p", {
+          className: "daily-reset-note daily-reset-note--victory",
+          html: `Nouveau personnage dans <strong class="daily-reset-countdown">${countdownLabel}</strong>`,
+        }),
+      );
+    }
+
     header.append(resultContainer);
   } else {
     header.append(createEl("p", { className: "hero-copy", text: heroCopy }));
@@ -107,7 +117,7 @@ function buildHeader({
   return stack;
 }
 
-function buildFooter({ stats, guessLabel, isInfinity }) {
+function buildFooter({ stats, guessLabel, isInfinity, countdownLabel }) {
   const footer = createEl("footer", { className: "game-footer" });
 
   if (isInfinity) {
@@ -124,6 +134,9 @@ function buildFooter({ stats, guessLabel, isInfinity }) {
     );
   } else {
     footer.append(
+      createEl("div", {
+        html: `<strong class="daily-reset-countdown">${countdownLabel || "00:00:00"}</strong> avant le prochain personnage`,
+      }),
       createEl("div", {
         text: `Statistiques : ${stats.wins} victoire${stats.wins === 1 ? "" : "s"} / ${stats.played} parties`,
       }),
@@ -153,6 +166,7 @@ export function renderClassic(app, state) {
   const hero = buildHeader({
     modeLabel: state.modeLabel,
     heroCopy: state.heroCopy,
+    countdownLabel: state.countdownLabel,
     status: state.status,
     answerName: state.answer ? state.answer.name : undefined,
     answerImage: state.status === "won" && state.answer ? state.answer.image : undefined,
@@ -180,7 +194,12 @@ export function renderClassic(app, state) {
     onPick: state.pickSuggestion,
   });
 
-  const footer = buildFooter({ stats: state.stats, guessLabel: state.guessLabel || `${state.guessesRemaining} essais restants`, isInfinity: state.isInfinity });
+  const footer = buildFooter({
+    stats: state.stats,
+    guessLabel: state.guessLabel || `${state.guessesRemaining} essais restants`,
+    isInfinity: state.isInfinity,
+    countdownLabel: state.countdownLabel,
+  });
 
   if (banner) {
     layout.append(banner);

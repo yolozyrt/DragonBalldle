@@ -26,9 +26,19 @@ export function renderGuessInput({ value, suggestions, disabled, onInput, onSubm
 
   const button = createEl("button", {
     className: "guess-button",
-    text: "Proposer",
+    text: "Chercher",
     attrs: { type: "button", disabled: disabled ? "disabled" : null },
   });
+  button.prepend(
+    createEl("img", {
+      className: "guess-button-icon",
+      attrs: {
+        src: "/assets/images/Gemini_Generated_Image_tcxfn2tcxfn2tcxf-removebg-preview.png",
+        alt: "",
+        "aria-hidden": "true",
+      },
+    }),
+  );
   button.addEventListener("click", () => onSubmit());
 
   row.append(input, button);
