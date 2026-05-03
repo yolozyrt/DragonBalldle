@@ -26,6 +26,7 @@ npm run build
 - `src/` : logique, accès données, rendu et composants UI
 - `supabase/schema.sql` : schéma SQL pour migrer les persos dans Supabase
 - `supabase/contact.sql` : table et policies SQL pour les messages du bouton Nous contacter
+- `supabase/daily-winners.sql` : table + RPC pour compter les victoires quotidiennes du mode classique
 
 ## Fonctionnement
 
@@ -44,3 +45,5 @@ VITE_SUPABASE_ANON_KEY=your-anon-public-key
 ```
 
 Ces variables sont obligatoires pour charger les persos depuis la table `characters` de Supabase.
+
+Pour activer le compteur des victoires du jour (affiche sous le minuteur apres une victoire), execute aussi le SQL [supabase/daily-winners.sql](supabase/daily-winners.sql).

@@ -135,6 +135,9 @@ function buildHeader({
   modeLabel = "Devine le Guerrier du jour",
   heroCopy = "Devinez le personnage Dragon Ball du jour. L'autocomplétion fonctionne avec les noms et alias, et chaque indice indique votre proximité.",
   countdownLabel,
+  dailyWinnersCount,
+  dailyWinnersLoading,
+  dailyWinnersError,
   status,
   answerName,
   answerImage,
@@ -233,6 +236,23 @@ function buildHeader({
         }),
       );
     }
+
+    let winnersText = "Chargement du compteur...";
+    if (Number.isInteger(dailyWinnersCount) && dailyWinnersCount >= 0) {
+      winnersText =
+        dailyWinnersCount === 1
+          ? `<strong>${dailyWinnersCount}</strong> joueur a trouve le personnage aujourd'hui`
+          : `<strong>${dailyWinnersCount}</strong> joueurs ont trouve le personnage aujourd'hui`;
+    } else if (dailyWinnersError && !dailyWinnersLoading) {
+      winnersText = "Compteur indisponible pour le moment.";
+    }
+
+    resultContainer.append(
+      createEl("p", {
+        className: "daily-winners-note",
+        html: `<span class="daily-winners-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 2a4 4 0 0 1 4 4v1h2a2 2 0 0 1 2 2v1.7a5.5 5.5 0 0 1-4.2 5.3 3.5 3.5 0 0 1-3.3 2.2h-1a3.5 3.5 0 0 1-3.3-2.2A5.5 5.5 0 0 1 4 10.7V9a2 2 0 0 1 2-2h2V6a4 4 0 0 1 4-4zm0 2a2 2 0 0 0-2 2v1h4V6a2 2 0 0 0-2-2zm-6 5v1.7a3.5 3.5 0 0 0 2.3 3.3c-.2-.5-.3-1-.3-1.5V9H6zm10 0v3.5c0 .5-.1 1-.3 1.5a3.5 3.5 0 0 0 2.3-3.3V9h-2zm-5.5 7.2h3a1.5 1.5 0 0 1-1.5 1.5 1.5 1.5 0 0 1-1.5-1.5z"/></svg></span><span>${winnersText}</span>`,
+      }),
+    );
 
     header.append(resultContainer);
   } else {
@@ -346,6 +366,9 @@ export function renderClassic(app, state) {
     modeLabel: state.modeLabel,
     heroCopy: state.heroCopy,
     countdownLabel: state.countdownLabel,
+    dailyWinnersCount: state.dailyWinnersCount,
+    dailyWinnersLoading: state.dailyWinnersLoading,
+    dailyWinnersError: state.dailyWinnersError,
     status: state.status,
     answerName: state.answer ? state.answer.name : undefined,
     answerImage: state.status === "won" && state.answer ? state.answer.image : undefined,

@@ -4,6 +4,7 @@ import { getDailyAnswer, getRandomAnswer } from "./core/daily-pick.js";
 import { compareGuess } from "./core/compare.js";
 import { loadGameState, loadStats, saveGameState, saveStats } from "./core/storage.js";
 import { loadCharacters } from "./data/load-data.js";
+import { fetchDailyWinnerCount, incrementDailyWinnerCount, isDailyWinnersConfigured } from "./data/daily-winners.js";
 import { findCharacterByQuery, searchCharacters } from "./data/search.js";
 import { qs } from "./ui/dom.js";
 import { renderClassic, renderPlaceholder } from "./ui/render.js";
@@ -45,6 +46,11 @@ const modeConfig = {
 
 const currentMode = modeConfig[page] || modeConfig.classic;
 const isInfinityMode = page === "infinity";
+
+function isValidDailyCount(value) {
+  return Number.isInteger(value) && value >= 0;
+}
+
 function updateStatsOnFinish(currentStats, status, guessCount) {
   const errors = guessCount - 1;
   const next = {
@@ -101,7 +107,40 @@ async function start() {
     onRestart: page === "infinity" ? restartGame : null,
     isInfinity: isInfinityMode,
     countdownLabel: isInfinityMode ? null : formatDuration(nextResetAt - Date.now()),
+    dailyWinnersCount: null,
+    dailyWinnersLoading: false,
+    dailyWinnersError: false,
   };
+
+  async function refreshDailyWinnersCount() {
+    if (page !== "classic") {
+      return;
+    }
+
+    if (!isDailyWinnersConfigured()) {
+      state.dailyWinnersLoading = false;
+      state.dailyWinnersError = true;
+      render();
+      return;
+    }
+
+    state.dailyWinnersLoading = true;
+    state.dailyWinnersError = false;
+    render();
+
+    try {
+      const nextCount = await fetchDailyWinnerCount(dateKey);
+      state.dailyWinnersCount = isValidDailyCount(nextCount) ? nextCount : null;
+      state.dailyWinnersLoading = false;
+      state.dailyWinnersError = false;
+      render();
+    } catch (error) {
+      state.dailyWinnersLoading = false;
+      state.dailyWinnersError = true;
+      render();
+      console.error("Impossible de charger le compteur quotidien:", error);
+    }
+  }
 
   function updateCountdownLabel() {
     if (isInfinityMode) {
@@ -133,6 +172,9 @@ async function start() {
     state.guessCount = 0;
     state.suggestions = [];
     state.canGuess = true;
+    state.dailyWinnersCount = null;
+    state.dailyWinnersLoading = false;
+    state.dailyWinnersError = false;
     updateCountdownLabel();
     persist();
     render();
@@ -243,6 +285,31 @@ async function start() {
     syncStats();
     persist();
     render();
+
+    if (page === "classic" && previousStatus === "playing" && nextStatus === "won") {
+      state.dailyWinnersLoading = true;
+      state.dailyWinnersError = false;
+      render();
+
+      incrementDailyWinnerCount(dateKey)
+        .then((nextCount) => {
+          if (isValidDailyCount(nextCount)) {
+            state.dailyWinnersCount = nextCount;
+            state.dailyWinnersLoading = false;
+            state.dailyWinnersError = false;
+            render();
+            return;
+          }
+
+          return refreshDailyWinnersCount();
+        })
+        .catch((error) => {
+          state.dailyWinnersLoading = false;
+          state.dailyWinnersError = true;
+          render();
+          console.error("Impossible de mettre a jour le compteur quotidien:", error);
+        });
+    }
   }
 
   function pickSuggestion(character) {
@@ -280,6 +347,10 @@ async function start() {
       .map((character) => ({ character, comparison: compareGuess(character, state.answer) }));
     state.status = savedState.status || "playing";
     syncStats();
+  }
+
+  if (page === "classic" && state.status === "won") {
+    await refreshDailyWinnersCount();
   }
 
   syncStats();
