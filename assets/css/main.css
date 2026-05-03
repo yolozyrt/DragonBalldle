@@ -258,6 +258,14 @@ button {
   margin-top: 12px;
 }
 
+.hero-result-message {
+  margin: 0;
+  color: #fff4bc;
+  font-weight: 700;
+  text-align: center;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.55);
+}
+
 .hero-result-art {
   width: min(260px, 46%);
   height: auto;
@@ -276,11 +284,22 @@ button {
   object-fit: cover;
 }
 
+.hero-result-fallback {
+  color: rgba(255, 251, 230, 0.86);
+  font-size: 0.92rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 .hero-result-caption {
   color: #fffbe6;
   font-weight: 700;
   text-shadow: 0 2px 6px rgba(0,0,0,0.6);
   font-size: 1.05rem;
+}
+
+.hero-restart {
+  margin-top: 8px;
 }
 
 .panel {

@@ -10,6 +10,8 @@ function buildHeader({
   status,
   answerName,
   answerImage,
+  onRestart,
+  restartLabel = "Rejouer",
 } = {}) {
   const stack = createEl("div", { className: "hero-stack" });
   const logo = createEl("img", {
@@ -71,6 +73,7 @@ function buildHeader({
   // If the player has won, show the found character inside the hero-card.
   if (status === "won" && answerName) {
     const art = createEl("div", { className: "hero-result-art" });
+    const message = createEl("p", { className: "hero-result-message", text: "Bravo ! Tu as trouve le personnage." });
     if (answerImage) {
       art.append(
         createEl("img", {
@@ -78,9 +81,22 @@ function buildHeader({
           attrs: { src: answerImage, alt: answerName, loading: "eager", decoding: "async" },
         }),
       );
+    } else {
+      art.append(createEl("span", { className: "hero-result-fallback", text: "Image indisponible" }));
     }
     const caption = createEl("div", { className: "hero-result-caption", text: answerName });
-    resultContainer.append(art, caption);
+    resultContainer.append(message, art, caption);
+
+    if (onRestart) {
+      const restartButton = createEl("button", {
+        className: "guess-button restart-button hero-restart",
+        text: restartLabel,
+        attrs: { type: "button" },
+      });
+      restartButton.addEventListener("click", onRestart);
+      resultContainer.append(restartButton);
+    }
+
     header.append(resultContainer);
   } else {
     header.append(createEl("p", { className: "hero-copy", text: heroCopy }));
@@ -140,6 +156,8 @@ export function renderClassic(app, state) {
     status: state.status,
     answerName: state.answer ? state.answer.name : undefined,
     answerImage: state.status === "won" && state.answer ? state.answer.image : undefined,
+    onRestart: state.onRestart,
+    restartLabel: state.restartLabel,
   });
   const layout = createEl("section", { className: "game-layout" });
 

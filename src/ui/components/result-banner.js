@@ -31,35 +31,6 @@ export function renderResultBanner({
     return banner;
   }
 
-  banner.classList.add("banner-win");
-  const victoryHeader = createEl("div", { className: "victory-header" });
-  const victoryBody = createEl("div", { className: "victory-body" });
-  const victoryCopy = createEl("div", { className: "victory-copy" });
-  const victoryArt = createEl("div", { className: "victory-art" });
-
-  if (answerImage) {
-    victoryArt.append(
-      createEl("img", {
-        className: "victory-image",
-        attrs: { src: answerImage, alt: answerName || "Personnage trouvé", loading: "eager" },
-      }),
-    );
-  } else {
-    victoryArt.append(createEl("span", { text: "Photo indisponible" }));
-  }
-
-  victoryHeader.append(createEl("strong", { text: "Victoire" }));
-  victoryCopy.append(
-    createEl("p", { text: "Tu as trouvé" }),
-    createEl("strong", { text: answerName || "le personnage" }),
-  );
-
-  victoryBody.append(victoryArt, victoryCopy);
-  banner.append(victoryHeader, victoryBody);
-
-  if (restartButton) {
-    banner.append(restartButton);
-  }
-
-  return banner;
+  // The win state is rendered directly inside the hero bubble.
+  return null;
 }
