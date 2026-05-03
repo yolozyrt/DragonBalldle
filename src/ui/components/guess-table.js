@@ -17,12 +17,13 @@ function renderYear(status, value) {
     return String(value);
   }
 
+  // Keep the year value only; visual hint arrow is provided by CSS (.hint-up / .hint-down)
   if (status === "higher") {
-    return `${value} ↑`;
+    return String(value);
   }
 
   if (status === "lower") {
-    return `${value} ↓`;
+    return String(value);
   }
 
   return String(value);
@@ -33,26 +34,26 @@ function renderEpisode(status, value) {
     return String(value);
   }
 
+  // Visual hint arrows are handled in CSS; keep content minimal for design
   if (status === "higher") {
-    return `${value} ↑`;
+    return String(value);
   }
 
   if (status === "lower") {
-    return `${value} ↓`;
+    return String(value);
   }
 
   return String(value || "-");
 }
 
 export function renderGuessTable(rows) {
-  const wrapper = createEl("section", { className: "panel table-card" });
+  const wrapper = createEl("section", { className: "table-card" });
   const scroll = createEl("div", { className: "table-scroll" });
   const table = createEl("table", { className: "guess-table" });
-
   table.innerHTML = `
     <thead>
       <tr>
-        <th>Image</th>
+        <th>Personnage</th>
         <th>Nom</th>
         <th>Race</th>
         <th>Saga</th>
@@ -64,6 +65,13 @@ export function renderGuessTable(rows) {
       </tr>
     </thead>
   `;
+
+  // enforce equal responsive column widths so every cell stays inside the container
+  const colgroup = createEl("colgroup");
+  for (let i = 0; i < 9; i++) {
+    colgroup.append(createEl("col", { attrs: { style: "width:11.1111%;" } }));
+  }
+  table.prepend(colgroup);
 
   const tbody = createEl("tbody");
 
@@ -80,7 +88,8 @@ export function renderGuessTable(rows) {
   } else {
     rows.forEach(({ character, comparison }) => {
       const row = createEl("tr");
-      const imageCell = createEl("td", { className: fieldClass(comparison.image.status) });
+      // image cell should not receive feedback coloring; keep separate class
+      const imageCell = createEl("td", { className: "image-cell" });
       if (character.image) {
         const imageWrap = createEl("div", { className: "table-image-preview" });
         const img = createEl("img", {
@@ -90,23 +99,46 @@ export function renderGuessTable(rows) {
         imageWrap.append(img);
         imageCell.append(imageWrap);
       }
-      row.append(
-        imageCell,
-        createEl("td", { className: fieldClass(comparison.name.status), text: character.name }),
-        createEl("td", { className: fieldClass(comparison.race.status), text: character.race }),
-        createEl("td", { className: fieldClass(comparison.sagas.status), text: character.sagas.join(", ") }),
-        createEl("td", { className: fieldClass(comparison.affiliations.status), text: character.affiliations.join(", ") }),
-        createEl("td", { className: fieldClass(comparison.alignment.status), text: character.alignment }),
-        createEl("td", { className: fieldClass(comparison.firstAppearanceYear.status), text: renderYear(comparison.firstAppearanceYear.status, comparison.firstAppearanceYear.value) }),
-        createEl("td", { className: fieldClass(comparison.seriePremiereAppearance.status), text: String(comparison.seriePremiereAppearance.value || "-") }),
-        createEl("td", { className: fieldClass(comparison.episodePremiereAppearance.status), text: renderEpisode(comparison.episodePremiereAppearance.status, comparison.episodePremiereAppearance.value) }),
-      );
+      const nameTd = createEl("td", { className: fieldClass(comparison.name.status), text: character.name });
+      const raceTd = createEl("td", { className: fieldClass(comparison.race.status), text: character.race });
+      const sagasTd = createEl("td", { className: fieldClass(comparison.sagas.status), text: character.sagas.join(", ") });
+      const affTd = createEl("td", { className: fieldClass(comparison.affiliations.status), text: character.affiliations.join(", ") });
+      const alignTd = createEl("td", { className: fieldClass(comparison.alignment.status), text: character.alignment });
+
+      const yearStatus = comparison.firstAppearanceYear.status;
+      const yearCls = (yearStatus === "exact" ? "feedback-cell feedback-exact" : "feedback-cell feedback-none") + (yearStatus === "higher" ? " hint-up" : yearStatus === "lower" ? " hint-down" : "");
+      const yearTd = createEl("td", { className: yearCls, text: renderYear(yearStatus, comparison.firstAppearanceYear.value) });
+
+      const serieTd = createEl("td", { className: fieldClass(comparison.seriePremiereAppearance.status), text: String(comparison.seriePremiereAppearance.value || "-") });
+
+      const epStatus = comparison.episodePremiereAppearance.status;
+      const epCls = (epStatus === "exact" ? "feedback-cell feedback-exact" : "feedback-cell feedback-none") + (epStatus === "higher" ? " hint-up" : epStatus === "lower" ? " hint-down" : "");
+      const epTd = createEl("td", { className: epCls, text: renderEpisode(epStatus, comparison.episodePremiereAppearance.value) });
+
+      row.append(imageCell, nameTd, raceTd, sagasTd, affTd, alignTd, yearTd, serieTd, epTd);
       tbody.append(row);
     });
   }
 
   table.append(tbody);
   scroll.append(table);
-  wrapper.append(scroll);
-  return wrapper;
+    // Ajouter l'indicateur de couleur
+    const indicator = createEl("div", { className: "table-indicator" });
+    indicator.append(
+      createEl("div", {
+        className: "indicator-item",
+        html: '<div class="indicator-box indicator-exact"></div><span>Correct</span>'
+      }),
+      createEl("div", {
+        className: "indicator-item",
+        html: '<div class="indicator-box indicator-partial"></div><span>Partiel</span>'
+      }),
+      createEl("div", {
+        className: "indicator-item",
+        html: '<div class="indicator-box indicator-none"></div><span>Incorrect</span>'
+      })
+    );
+  
+    wrapper.append(scroll, indicator);
+    return wrapper;
 }

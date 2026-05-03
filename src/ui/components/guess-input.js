@@ -1,7 +1,7 @@
 import { createEl } from "../dom.js";
 
 export function renderGuessInput({ value, suggestions, disabled, onInput, onSubmit, onPick }) {
-  const wrapper = createEl("section", { className: "panel guess-panel" });
+  const wrapper = createEl("section", { className: "guess-panel" });
 
   const row = createEl("div", { className: "guess-row" });
   const input = createEl("input", {
