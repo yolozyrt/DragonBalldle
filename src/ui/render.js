@@ -1,8 +1,135 @@
 import { APP_NAME, MAX_GUESSES } from "../config.js";
 import { createEl, clearEl } from "./dom.js";
+import { submitContactMessage } from "../data/contact.js";
 import { renderGuessInput } from "./components/guess-input.js";
 import { renderGuessTable } from "./components/guess-table.js";
 import { renderResultBanner } from "./components/result-banner.js";
+
+function openContactModal() {
+  const overlay = createEl("div", {
+    className: "contact-modal-backdrop",
+    attrs: { role: "presentation" },
+  });
+  const dialog = createEl("section", {
+    className: "contact-modal",
+    attrs: {
+      role: "dialog",
+      "aria-modal": "true",
+      "aria-labelledby": "contact-modal-title",
+    },
+  });
+  const title = createEl("h3", {
+    className: "contact-modal-title",
+    text: "Nous contacter",
+    attrs: { id: "contact-modal-title" },
+  });
+  const hint = createEl("p", {
+    className: "contact-modal-copy",
+    text: "Partagez votre message, suggestion ou bug. Nous le recevrons directement dans la base de donnees.",
+  });
+  const textarea = createEl("textarea", {
+    className: "contact-modal-textarea",
+    attrs: {
+      name: "message",
+      rows: "8",
+      maxlength: "2000",
+      required: "true",
+      placeholder: "Votre message...",
+    },
+  });
+  const status = createEl("p", {
+    className: "contact-modal-status",
+    attrs: { "aria-live": "polite" },
+  });
+  const sendButton = createEl("button", {
+    className: "contact-modal-send",
+    text: "Envoyer",
+    attrs: { type: "submit" },
+  });
+  const closeButton = createEl("button", {
+    className: "contact-modal-close",
+    text: "Fermer",
+    attrs: { type: "button", "aria-label": "Fermer la popup" },
+  });
+
+  const actions = createEl("div", { className: "contact-modal-actions" });
+  actions.append(sendButton, closeButton);
+
+  const form = createEl("form", { className: "contact-modal-form" });
+  form.append(title, hint, textarea, status, actions);
+  dialog.append(form);
+  overlay.append(dialog);
+  document.body.append(overlay);
+  textarea.focus();
+
+  let isSending = false;
+
+  const closeModal = () => {
+    if (isSending) {
+      return;
+    }
+
+    document.removeEventListener("keydown", onEsc);
+    overlay.remove();
+  };
+
+  const setStatus = (message, variant = "info") => {
+    status.textContent = message;
+    status.dataset.variant = variant;
+  };
+
+  const onEsc = (event) => {
+    if (event.key === "Escape") {
+      closeModal();
+    }
+  };
+
+  overlay.addEventListener("click", (event) => {
+    if (event.target === overlay) {
+      closeModal();
+    }
+  });
+
+  closeButton.addEventListener("click", closeModal);
+  document.addEventListener("keydown", onEsc);
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const message = textarea.value.trim();
+    if (message.length < 5) {
+      setStatus("Le message doit contenir au moins 5 caracteres.", "error");
+      return;
+    }
+
+    isSending = true;
+    sendButton.disabled = true;
+    closeButton.disabled = true;
+    textarea.disabled = true;
+    setStatus("Envoi en cours...", "info");
+
+    try {
+      await submitContactMessage({
+        message,
+        pagePath: window.location.pathname,
+        mode: document.body.dataset.page || "classic",
+        userAgent: navigator.userAgent,
+      });
+
+      textarea.value = "";
+      setStatus("Message envoye. Merci pour votre retour !", "success");
+    } catch (error) {
+      const safeMessage = error instanceof Error ? error.message : "Erreur inconnue lors de l'envoi.";
+      setStatus(safeMessage, "error");
+    } finally {
+      isSending = false;
+      sendButton.disabled = false;
+      closeButton.disabled = false;
+      textarea.disabled = false;
+      textarea.focus();
+    }
+  });
+}
 
 function buildHeader({
   modeLabel = "Devine le Guerrier du jour",
@@ -175,10 +302,11 @@ function buildFooter({ stats, guessLabel, isInfinity, countdownLabel }) {
   const contactButton = createEl("button", {
     className: "footer-contact-button",
     text: "Nous contacter",
-    attrs: { type: "button", title: "Bientôt disponible" },
+    attrs: { type: "button", title: "Nous contacter" },
   });
   contactButton.addEventListener("click", (event) => {
     event.preventDefault();
+    openContactModal();
   });
 
   dashboard.append(

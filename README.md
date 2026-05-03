@@ -25,6 +25,7 @@ npm run build
 - `assets/css/` : styles globaux et composants
 - `src/` : logique, accès données, rendu et composants UI
 - `supabase/schema.sql` : schéma SQL pour migrer les persos dans Supabase
+- `supabase/contact.sql` : table et policies SQL pour les messages du bouton Nous contacter
 
 ## Fonctionnement
 
