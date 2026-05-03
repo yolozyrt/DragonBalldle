@@ -5,6 +5,139 @@ import { renderGuessInput } from "./components/guess-input.js";
 import { renderGuessTable } from "./components/guess-table.js";
 import { renderResultBanner } from "./components/result-banner.js";
 
+let lastVictoryFxTick = 0;
+
+function playVictoryAnimation(app) {
+  const heroCard = app.querySelector(".hero-card");
+  const heroStack = app.querySelector(".hero-stack");
+  if (!heroCard || !heroStack) {
+    return;
+  }
+
+  app.classList.remove("app-shell--victory-boost");
+  void app.offsetWidth;
+  app.classList.add("app-shell--victory-boost");
+
+  heroCard.classList.remove("hero-card--victory-pop");
+  void heroCard.offsetWidth;
+  heroCard.classList.add("hero-card--victory-pop");
+
+  const flash = createEl("div", {
+    className: "victory-energy-flash",
+    attrs: { "aria-hidden": "true" },
+  });
+
+  const ringLayer = createEl("div", {
+    className: "victory-rings",
+    attrs: { "aria-hidden": "true" },
+  });
+
+  for (let i = 0; i < 3; i += 1) {
+    const ring = createEl("span", { className: "victory-ring" });
+    ring.style.animationDelay = `${(i * 0.12).toFixed(2)}s`;
+    ringLayer.append(ring);
+  }
+
+  const burst = createEl("div", {
+    className: "victory-burst",
+    attrs: { "aria-hidden": "true" },
+  });
+
+  const rain = createEl("div", {
+    className: "victory-rain",
+    attrs: { "aria-hidden": "true" },
+  });
+
+  const heroRect = heroCard.getBoundingClientRect();
+  const stackRect = heroStack.getBoundingClientRect();
+  const burstPadding = 28;
+  const burstWidth = heroRect.width + burstPadding * 2;
+  const burstHeight = heroRect.height + burstPadding * 2;
+  const centerX = burstWidth / 2;
+  const centerY = burstHeight / 2;
+
+  burst.classList.add("victory-burst--around");
+  burst.style.left = `${heroRect.left - stackRect.left - burstPadding}px`;
+  burst.style.top = `${heroRect.top - stackRect.top - burstPadding}px`;
+  burst.style.width = `${burstWidth}px`;
+  burst.style.height = `${burstHeight}px`;
+
+  rain.style.left = "0";
+  rain.style.top = "0";
+  rain.style.width = "100vw";
+  rain.style.height = "100vh";
+
+  const colors = ["#ffe66d", "#ff9f1c", "#35e06c", "#6bc5ff", "#ff6f91"];
+  for (let i = 0; i < 60; i += 1) {
+    const piece = createEl("span", {
+      className: "victory-burst-piece",
+    });
+
+    const edge = Math.floor(Math.random() * 4);
+    let x = 0;
+    let y = 0;
+
+    if (edge === 0) {
+      x = Math.random() * burstWidth;
+      y = Math.random() * 12;
+    } else if (edge === 1) {
+      x = burstWidth - Math.random() * 12;
+      y = Math.random() * burstHeight;
+    } else if (edge === 2) {
+      x = Math.random() * burstWidth;
+      y = burstHeight - Math.random() * 12;
+    } else {
+      x = Math.random() * 12;
+      y = Math.random() * burstHeight;
+    }
+
+    const dx = x - centerX;
+    const dy = y - centerY;
+    const length = Math.hypot(dx, dy) || 1;
+    const speed = 40 + Math.random() * 120;
+    const driftX = (dx / length) * speed + (Math.random() - 0.5) * 50;
+    const driftY = (dy / length) * speed + (Math.random() - 0.5) * 50;
+
+    piece.style.left = `${x}px`;
+    piece.style.top = `${y}px`;
+    piece.style.background = colors[i % colors.length];
+    piece.style.animationDelay = `${(Math.random() * 0.18).toFixed(2)}s`;
+    piece.style.setProperty("--x-drift", `${Math.round(driftX)}px`);
+    piece.style.setProperty("--y-drift", `${Math.round(driftY)}px`);
+    piece.style.transform = `rotate(${Math.round(Math.random() * 220)}deg)`;
+    burst.append(piece);
+  }
+
+  for (let i = 0; i < 46; i += 1) {
+    const piece = createEl("span", {
+      className: "victory-rain-piece",
+    });
+    const left = Math.random() * 100;
+    const drift = Math.round((Math.random() - 0.5) * 160);
+    const size = 5 + Math.random() * 6;
+    const duration = 7 + Math.random() * 4.5;
+
+    piece.style.left = `${left}vw`;
+    piece.style.width = `${size}px`;
+    piece.style.height = `${size * 1.8}px`;
+    piece.style.background = colors[i % colors.length];
+    piece.style.setProperty("--rain-drift", `${drift}px`);
+    piece.style.setProperty("--rain-duration", `${duration.toFixed(2)}s`);
+    piece.style.animationDelay = `${(Math.random() * 2.2).toFixed(2)}s`;
+    rain.append(piece);
+  }
+
+  heroCard.append(flash, ringLayer);
+  heroStack.append(burst);
+  document.body.append(rain);
+  window.setTimeout(() => flash.remove(), 520);
+  window.setTimeout(() => ringLayer.remove(), 1200);
+  window.setTimeout(() => burst.remove(), 3200);
+  window.setTimeout(() => rain.remove(), 10500);
+  window.setTimeout(() => heroCard.classList.remove("hero-card--victory-pop"), 900);
+  window.setTimeout(() => app.classList.remove("app-shell--victory-boost"), 680);
+}
+
 function openContactModal() {
   const overlay = createEl("div", {
     className: "contact-modal-backdrop",
@@ -135,6 +268,7 @@ function buildHeader({
   modeLabel = "Devine le Guerrier du jour",
   heroCopy = "Devinez le personnage Dragon Ball du jour. L'autocomplétion fonctionne avec les noms et alias, et chaque indice indique votre proximité.",
   countdownLabel,
+  showDailyWinners = false,
   dailyWinnersCount,
   dailyWinnersLoading,
   dailyWinnersError,
@@ -237,22 +371,24 @@ function buildHeader({
       );
     }
 
-    let winnersText = "Chargement du compteur...";
-    if (Number.isInteger(dailyWinnersCount) && dailyWinnersCount >= 0) {
-      winnersText =
-        dailyWinnersCount === 1
-          ? `<strong>${dailyWinnersCount}</strong> joueur a trouve le personnage aujourd'hui`
-          : `<strong>${dailyWinnersCount}</strong> joueurs ont trouve le personnage aujourd'hui`;
-    } else if (dailyWinnersError && !dailyWinnersLoading) {
-      winnersText = "Compteur indisponible pour le moment.";
-    }
+    if (showDailyWinners) {
+      let winnersText = "Chargement du compteur...";
+      if (Number.isInteger(dailyWinnersCount) && dailyWinnersCount >= 0) {
+        winnersText =
+          dailyWinnersCount === 1
+            ? `<strong>${dailyWinnersCount}</strong> joueur a trouve le personnage aujourd'hui`
+            : `<strong>${dailyWinnersCount}</strong> joueurs ont trouve le personnage aujourd'hui`;
+      } else if (dailyWinnersError && !dailyWinnersLoading) {
+        winnersText = "Compteur indisponible pour le moment.";
+      }
 
-    resultContainer.append(
-      createEl("p", {
-        className: "daily-winners-note",
-        html: `<span class="daily-winners-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 2a4 4 0 0 1 4 4v1h2a2 2 0 0 1 2 2v1.7a5.5 5.5 0 0 1-4.2 5.3 3.5 3.5 0 0 1-3.3 2.2h-1a3.5 3.5 0 0 1-3.3-2.2A5.5 5.5 0 0 1 4 10.7V9a2 2 0 0 1 2-2h2V6a4 4 0 0 1 4-4zm0 2a2 2 0 0 0-2 2v1h4V6a2 2 0 0 0-2-2zm-6 5v1.7a3.5 3.5 0 0 0 2.3 3.3c-.2-.5-.3-1-.3-1.5V9H6zm10 0v3.5c0 .5-.1 1-.3 1.5a3.5 3.5 0 0 0 2.3-3.3V9h-2zm-5.5 7.2h3a1.5 1.5 0 0 1-1.5 1.5 1.5 1.5 0 0 1-1.5-1.5z"/></svg></span><span>${winnersText}</span>`,
-      }),
-    );
+      resultContainer.append(
+        createEl("p", {
+          className: "daily-winners-note",
+          html: `<span class="daily-winners-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 2a4 4 0 0 1 4 4v1h2a2 2 0 0 1 2 2v1.7a5.5 5.5 0 0 1-4.2 5.3 3.5 3.5 0 0 1-3.3 2.2h-1a3.5 3.5 0 0 1-3.3-2.2A5.5 5.5 0 0 1 4 10.7V9a2 2 0 0 1 2-2h2V6a4 4 0 0 1 4-4zm0 2a2 2 0 0 0-2 2v1h4V6a2 2 0 0 0-2-2zm-6 5v1.7a3.5 3.5 0 0 0 2.3 3.3c-.2-.5-.3-1-.3-1.5V9H6zm10 0v3.5c0 .5-.1 1-.3 1.5a3.5 3.5 0 0 0 2.3-3.3V9h-2zm-5.5 7.2h3a1.5 1.5 0 0 1-1.5 1.5 1.5 1.5 0 0 1-1.5-1.5z"/></svg></span><span>${winnersText}</span>`,
+        }),
+      );
+    }
 
     header.append(resultContainer);
   } else {
@@ -366,6 +502,7 @@ export function renderClassic(app, state) {
     modeLabel: state.modeLabel,
     heroCopy: state.heroCopy,
     countdownLabel: state.countdownLabel,
+    showDailyWinners: !state.isInfinity,
     dailyWinnersCount: state.dailyWinnersCount,
     dailyWinnersLoading: state.dailyWinnersLoading,
     dailyWinnersError: state.dailyWinnersError,
@@ -416,4 +553,9 @@ export function renderClassic(app, state) {
   
   layout.append(footer);
   app.append(hero, layout);
+
+  if (state.status === "won" && state.victoryFxTick && state.victoryFxTick !== lastVictoryFxTick) {
+    lastVictoryFxTick = state.victoryFxTick;
+    playVictoryAnimation(app);
+  }
 }

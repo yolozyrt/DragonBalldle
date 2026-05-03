@@ -110,6 +110,7 @@ async function start() {
     dailyWinnersCount: null,
     dailyWinnersLoading: false,
     dailyWinnersError: false,
+    victoryFxTick: 0,
   };
 
   async function refreshDailyWinnersCount() {
@@ -280,6 +281,10 @@ async function start() {
     state.rows = nextRows;
     state.status = nextStatus;
     state.guessText = "";
+
+    if (previousStatus === "playing" && nextStatus === "won") {
+      state.victoryFxTick = Date.now();
+    }
 
     persistStatsIfNeeded(previousStatus, nextStatus);
     syncStats();

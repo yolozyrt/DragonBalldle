@@ -604,3 +604,24 @@
     min-height: 46px;
   }
 }
+
+/* Hero restart button must keep visible text and pill size,
+   unlike the icon-only guess button used in the input row. */
+.hero-result .hero-restart.guess-button {
+  width: auto;
+  min-width: 190px;
+  height: 46px;
+  padding: 0 18px;
+  border-radius: 999px;
+  font-family: 'Bangers', 'Impact', cursive;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #2a1600;
+}
+
+@media (max-width: 720px) {
+  .hero-result .hero-restart.guess-button {
+    min-width: 100%;
+  }
+}
