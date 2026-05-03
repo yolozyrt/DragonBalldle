@@ -9,6 +9,10 @@ export function renderResultBanner({
   onRestart,
   restartLabel = "Rejouer",
 }) {
+  if (status === "playing") {
+    return null;
+  }
+
   const banner = createEl("section", { className: "panel result-banner" });
   const restartButton = onRestart
     ? createEl("button", { className: "guess-button restart-button", text: restartLabel, attrs: { type: "button" } })
@@ -16,15 +20,6 @@ export function renderResultBanner({
 
   if (restartButton) {
     restartButton.addEventListener("click", onRestart);
-  }
-
-  if (status === "playing") {
-    banner.classList.add("banner-muted");
-    banner.append(
-      createEl("strong", { text: modeLabel }),
-      createEl("p", { text: "Devinez le personnage Dragon Ball du jour." }),
-    );
-    return banner;
   }
 
   if (status === "lost") {

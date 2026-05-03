@@ -7,24 +7,88 @@ import { renderResultBanner } from "./components/result-banner.js";
 function buildHeader({
   modeLabel = "Mode classique",
   heroCopy = "Devinez le personnage Dragon Ball du jour. L'autocomplétion fonctionne avec les noms et alias, et chaque indice indique votre proximité.",
+  status,
+  answerName,
+  answerImage,
 } = {}) {
+  const stack = createEl("div", { className: "hero-stack" });
+  const logo = createEl("img", {
+    className: "page-logo",
+    attrs: {
+      src: "/assets/images/Gemini_Generated_Image_tcxfn2tcxfn2tcxf-removebg-preview.png",
+      alt: "DragonBalldle - Le Défi",
+      loading: "eager",
+      decoding: "async",
+    },
+  });
   const header = createEl("header", { className: "hero-card" });
+  const modeButtons = [
+    {
+      href: "/index.html",
+      image: "/assets/images/Gemini_Generated_Image_4inpk34inpk34inp-removebg-preview.png",
+      label: "Mode classique",
+    },
+    {
+      href: "/modes/infinity.html",
+      image: "/assets/images/Gemini_Generated_Image_193lql193lql193l-removebg-preview.png",
+      label: "Mode Infinity",
+    },
+    {
+      href: "/modes/quote.html",
+      image: "/assets/images/Gemini_Generated_Image_j1946lj1946lj194-removebg-preview.png",
+      label: "Mode citation",
+    },
+    {
+      href: "/modes/silhouette.html",
+      image: "/assets/images/Gemini_Generated_Image_ff3nykff3nykff3n-removebg-preview.png",
+      label: "Mode silhouette",
+    },
+  ];
+
+  const modeLinks = createEl("nav", { className: "mode-shortcuts", attrs: { "aria-label": "Changer de mode" } });
+
+  modeButtons.forEach(({ href, image, label }) => {
+    const link = createEl("a", {
+      className: "mode-shortcut",
+      attrs: { href, "aria-label": label, title: label },
+    });
+    link.append(
+      createEl("img", {
+        className: "mode-shortcut-image",
+        attrs: { src: image, alt: label, loading: "eager", decoding: "async" },
+      }),
+    );
+    modeLinks.append(link);
+  });
+
+  const resultContainer = createEl("div", { className: "hero-result" });
+
   header.append(
     createEl("p", { className: "eyebrow", text: APP_NAME }),
     createEl("h1", { className: "hero-title", text: modeLabel }),
-    createEl("p", { className: "hero-copy", text: heroCopy }),
-    createEl("nav", {
-      className: "mode-links",
-      html: `
-        <a href="/index.html">Classique</a>
-        <a href="/modes/classic.html">Page classique</a>
-        <a href="/modes/infinity.html">Infinity</a>
-        <a href="/modes/quote.html">Citation</a>
-        <a href="/modes/silhouette.html">Silhouette</a>
-      `,
-    }),
   );
-  return header;
+
+  // If the player has won, show the found character inside the hero-card.
+  if (status === "won" && answerName) {
+    const art = createEl("div", { className: "hero-result-art" });
+    if (answerImage) {
+      art.append(
+        createEl("img", {
+          className: "hero-result-image",
+          attrs: { src: answerImage, alt: answerName, loading: "eager", decoding: "async" },
+        }),
+      );
+    }
+    const caption = createEl("div", { className: "hero-result-caption", text: answerName });
+    resultContainer.append(art, caption);
+    header.append(resultContainer);
+  } else {
+    header.append(createEl("p", { className: "hero-copy", text: heroCopy }));
+  }
+  // Place the small mode shortcut buttons outside the hero bubble,
+  // between the page logo and the hero card (bubble).
+  stack.append(logo, modeLinks, header);
+  return stack;
 }
 
 function buildFooter({ stats, guessLabel, isInfinity }) {
@@ -70,7 +134,13 @@ export function renderPlaceholder(app, title, copy = "Ce mode est provisionnel p
 export function renderClassic(app, state) {
   clearEl(app);
 
-  const hero = buildHeader({ modeLabel: state.modeLabel, heroCopy: state.heroCopy });
+  const hero = buildHeader({
+    modeLabel: state.modeLabel,
+    heroCopy: state.heroCopy,
+    status: state.status,
+    answerName: state.answer ? state.answer.name : undefined,
+    answerImage: state.status === "won" && state.answer ? state.answer.image : undefined,
+  });
   const layout = createEl("section", { className: "game-layout" });
 
   const banner = renderResultBanner({
@@ -94,7 +164,10 @@ export function renderClassic(app, state) {
 
   const footer = buildFooter({ stats: state.stats, guessLabel: state.guessLabel || `${state.guessesRemaining} essais restants`, isInfinity: state.isInfinity });
 
-  layout.append(banner, guessInput);
+  if (banner) {
+    layout.append(banner);
+  }
+  layout.append(guessInput);
   
   // N'afficher la table que s'il y a des guesses
   if (state.rows.length > 0) {

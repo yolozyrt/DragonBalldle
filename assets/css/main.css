@@ -2,7 +2,7 @@
    DRAGON BALL·DLE — main.css
    ================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Luckiest+Guy&display=swap');
 
 :root {
   color-scheme: light;
@@ -48,7 +48,7 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('/assets/images/téléchargé (2).jpg') no-repeat center center / cover;
+  background: url('/assets/images/Gemini_Generated_Image_oyvb8uoyvb8uoyvb.png') no-repeat center center / cover;
   z-index: -1;
 }
 
@@ -104,6 +104,25 @@ button {
   padding: 44px 0 56px;
 }
 
+.hero-stack {
+  display: grid;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.page-logo {
+  display: block;
+  width: min(78%, 560px);
+  height: auto;
+  margin: 0 auto;
+  filter:
+    drop-shadow(0 10px 26px rgba(3, 10, 26, 0.42))
+    drop-shadow(0 0 18px rgba(255, 221, 102, 0.14));
+  user-select: none;
+  pointer-events: none;
+}
+
 .hero-card,
 .panel,
 .game-footer {
@@ -125,40 +144,143 @@ button {
 }
 
 .hero-card {
-  padding: 28px;
-  margin-bottom: 18px;
-  background: linear-gradient(135deg, rgba(255, 228, 196, 0.95) 0%, rgba(255, 218, 185, 0.85) 100%);
-  border: 4px solid #FFDAB9;
+  overflow: hidden;
+  padding: 30px 32px 26px;
+  background:
+    linear-gradient(180deg, rgba(7, 25, 56, 0.34), rgba(7, 25, 56, 0.8)),
+    url('/assets/images/Gemini_Generated_Image_ho41qjho41qjho41.png') center center / cover no-repeat;
+  border: 4px solid rgba(255, 220, 120, 0.82);
+  border-radius: 30px;
+  box-shadow:
+    0 18px 42px rgba(3, 10, 26, 0.45),
+    0 0 0 2px rgba(255, 241, 185, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 0 0 1px rgba(255, 238, 168, 0.18);
+  }
+
+.hero-card::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 224, 133, 0.28);
+  pointer-events: none;
+}
+
+.hero-card::after {
+  content: '';
+  position: absolute;
+  inset: auto 18px 14px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 238, 168, 0.35), transparent);
+  pointer-events: none;
 }
 
 .eyebrow {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   text-transform: uppercase;
-  letter-spacing: 0.22em;
-  color: var(--accent-2);
-  font-size: 0.78rem;
+  letter-spacing: 0.32em;
+  color: rgba(255, 244, 204, 0.74);
+  font-size: 0.74rem;
 }
 
 .hero-title {
-  font-family: 'Bangers', 'Impact', cursive;
-  font-size: clamp(2.1rem, 4vw, 3.75rem);
+  font-family: 'Luckiest Guy', 'Bangers', 'Impact', cursive;
+  font-size: clamp(2.6rem, 5vw, 4.35rem);
   font-weight: 400;
-  letter-spacing: 3px;
-  line-height: 0.95;
-  color: var(--db-gold);
+  letter-spacing: 0.02em;
+  line-height: 0.92;
+  color: #ffdf57;
   text-shadow:
-    -2px -2px 0 rgba(0, 0, 0, 0.2),
-    0 0 8px #fff,
-    0 0 20px var(--db-gold),
-    0 0 40px var(--db-orange),
-    2px 2px 0 #5a2200;
+    -3px -3px 0 rgba(6, 16, 34, 0.95),
+    0 0 10px rgba(255, 245, 187, 0.25),
+    0 0 22px rgba(255, 215, 0, 0.28),
+    3px 3px 0 #281401;
+  transform: skewX(-10deg);
+  transform-origin: left center;
+}
+
+.mode-shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin: 12px 0 8px;
+}
+
+/* Remove the "bubble" chrome: show plain images with spacing and a subtle hover */
+.mode-shortcut {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* No transform or bubble on the container; scale only the image */
+.mode-shortcut:focus-visible {
+  outline: none;
+}
+
+.mode-shortcut-image {
+  display: block;
+  width: 88%;
+  height: 88%;
+  object-fit: contain;
+  transition: transform 0.22s cubic-bezier(.2,.9,.3,1);
+}
+
+/* Hover/focus: enlarge the image only */
+.mode-shortcut:hover .mode-shortcut-image,
+.mode-shortcut:focus-visible .mode-shortcut-image {
+  transform: translateY(-4px) scale(1.12);
 }
 
 .hero-copy {
   margin-top: 14px;
-  max-width: 68ch;
-  line-height: 1.6;
-  color: var(--muted);
+  max-width: 72ch;
+  line-height: 1.65;
+  color: rgba(245, 235, 205, 0.88);
+}
+
+/* Show the found character inside the hero-card */
+.hero-result {
+  display: grid;
+  grid-auto-flow: row;
+  gap: 10px;
+  justify-items: center;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.hero-result-art {
+  width: min(260px, 46%);
+  height: auto;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.06));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+.hero-result-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.hero-result-caption {
+  color: #fffbe6;
+  font-weight: 700;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+  font-size: 1.05rem;
 }
 
 .panel {
@@ -280,37 +402,49 @@ button {
   color: var(--muted);
 }
 
-.mode-links {
-  margin-top: 16px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  color: var(--muted);
-}
-
-.mode-links a {
-  text-decoration: none;
-  padding: 8px 12px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: rgba(255, 123, 0, 0.04);
-}
-
-.mode-links a:hover {
-  border-color: rgba(255, 215, 0, 0.55);
-  color: var(--db-gold);
-}
-
 @media (max-width: 720px) {
   .app-shell {
     width: min(100% - 16px, 750px);
     padding-top: 18px;
   }
 
+  .hero-stack {
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .page-logo {
+    width: min(100%, 680px);
+  }
+
   .hero-card,
   .panel,
   .game-footer {
     border-radius: 18px;
+  }
+
+  .hero-card {
+    padding: 22px 18px 20px;
+    border-radius: 22px;
+  }
+
+  .page-logo {
+    width: min(88%, 420px);
+  }
+
+  .mode-shortcuts {
+    gap: 12px;
+    margin: 10px 0 8px;
+  }
+
+  .mode-shortcut {
+    width: 72px;
+    height: 72px;
+    border-radius: 6px;
+  }
+
+  .hero-title {
+    font-size: clamp(2.1rem, 11vw, 3.15rem);
   }
 
   .game-footer {
