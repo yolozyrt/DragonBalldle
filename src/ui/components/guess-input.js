@@ -1,4 +1,5 @@
 import { createEl } from "../dom.js";
+import { assetPath } from "../dom.js";
 
 export function renderGuessInput({ value, suggestions, disabled, onInput, onSubmit, onPick }) {
   const wrapper = createEl("section", { className: "guess-panel" });
@@ -37,7 +38,7 @@ export function renderGuessInput({ value, suggestions, disabled, onInput, onSubm
     createEl("img", {
       className: "guess-button-icon",
       attrs: {
-        src: "/assets/images/Gemini_Generated_Image_ylsdo2ylsdo2ylsd-removebg-preview.png",
+        src: assetPath("assets/images/Gemini_Generated_Image_ylsdo2ylsdo2ylsd-removebg-preview.png"),
         alt: "",
         "aria-hidden": "true",
       },

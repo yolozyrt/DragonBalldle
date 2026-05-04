@@ -1,3 +1,24 @@
+export function assetPath(path) {
+  // Determine the current page depth to build correct relative path
+  const currentPath = window.location.pathname;
+  
+  // Count how many directories deep we are (excluding root)
+  // /crosnier/DragonBalldle/index.html -> depth 0
+  // /crosnier/DragonBalldle/modes/infinity.html -> depth 1
+  const segments = currentPath.split('/').filter(Boolean);
+  const ballParts = segments.indexOf('DragonBalldle');
+  
+  let depth = 0;
+  if (ballParts !== -1 && segments.length > ballParts + 2) {
+    // We're in a subdirectory like modes/
+    depth = segments.length - ballParts - 2;
+  }
+  
+  // Build relative path with correct number of ../
+  const prefix = depth > 0 ? '../'.repeat(depth) : './';
+  return prefix + path.replace(/^\.\//, '').replace(/^\//, '');
+}
+
 export function qs(selector, root = document) {
   return root.querySelector(selector);
 }

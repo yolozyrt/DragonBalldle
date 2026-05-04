@@ -1,5 +1,5 @@
 import { APP_NAME, MAX_GUESSES } from "../config.js";
-import { createEl, clearEl } from "./dom.js";
+import { createEl, clearEl, assetPath } from "./dom.js";
 import { submitContactMessage } from "../data/contact.js";
 import { renderGuessInput } from "./components/guess-input.js";
 import { renderGuessTable } from "./components/guess-table.js";
@@ -265,6 +265,7 @@ function openContactModal() {
 }
 
 function buildHeader({
+  eyebrow = APP_NAME,
   modeLabel = "Devine le Guerrier du jour",
   heroCopy = "Devinez le personnage Dragon Ball du jour. L'autocomplétion fonctionne avec les noms et alias, et chaque indice indique votre proximité.",
   countdownLabel,
@@ -282,7 +283,7 @@ function buildHeader({
   const logo = createEl("img", {
     className: "page-logo",
     attrs: {
-      src: "/assets/images/Gemini_Generated_Image_tcxfn2tcxfn2tcxf-removebg-preview.png",
+      src: assetPath("assets/images/Gemini_Generated_Image_tcxfn2tcxfn2tcxf-removebg-preview.png"),
       alt: "DragonBalldle - Le Défi",
       loading: "eager",
       decoding: "async",
@@ -291,23 +292,23 @@ function buildHeader({
   const header = createEl("header", { className: "hero-card" });
   const modeButtons = [
     {
-      href: "/index.html",
-      image: "/assets/images/Gemini_Generated_Image_4inpk34inpk34inp-removebg-preview.png",
+      href: assetPath("index.html"),
+      image: assetPath("assets/images/Gemini_Generated_Image_4inpk34inpk34inp-removebg-preview.png"),
       label: "Mode classique",
     },
     {
-      href: "/modes/infinity.html",
-      image: "/assets/images/Gemini_Generated_Image_193lql193lql193l-removebg-preview.png",
+      href: assetPath("modes/infinity.html"),
+      image: assetPath("assets/images/Gemini_Generated_Image_193lql193lql193l-removebg-preview.png"),
       label: "Devine le Guerrier",
     },
     {
-      href: "/modes/quote.html",
-      image: "/assets/images/Gemini_Generated_Image_j1946lj1946lj194-removebg-preview.png",
+      href: assetPath("modes/quote.html"),
+      image: assetPath("assets/images/Gemini_Generated_Image_j1946lj1946lj194-removebg-preview.png"),
       label: "Mode citation",
     },
     {
-      href: "/modes/silhouette.html",
-      image: "/assets/images/Gemini_Generated_Image_ff3nykff3nykff3n-removebg-preview.png",
+      href: assetPath("modes/silhouette.html"),
+      image: assetPath("assets/images/Gemini_Generated_Image_ff3nykff3nykff3n-removebg-preview.png"),
       label: "Mode silhouette",
     },
   ];
@@ -331,7 +332,7 @@ function buildHeader({
   const resultContainer = createEl("div", { className: "hero-result" });
 
   header.append(
-    createEl("p", { className: "eyebrow", text: APP_NAME }),
+    createEl("p", { className: "eyebrow", text: eyebrow }),
     createEl("h1", { className: "hero-title", text: modeLabel }),
   );
 
@@ -499,6 +500,7 @@ export function renderClassic(app, state) {
   clearEl(app);
 
   const hero = buildHeader({
+    eyebrow: state.isInfinity ? "Mode infini" : "Mode classique",
     modeLabel: state.modeLabel,
     heroCopy: state.heroCopy,
     countdownLabel: state.countdownLabel,
