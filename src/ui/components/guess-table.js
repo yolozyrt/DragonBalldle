@@ -75,13 +75,15 @@ export function renderGuessTable(rows) {
 
   const tbody = createEl("tbody");
 
+  const cellAttrs = (label) => ({ "data-label": label });
+
   if (rows.length === 0) {
     const emptyRow = createEl("tr");
     emptyRow.append(
       createEl("td", {
         className: "empty-state",
         text: "Aucune proposition pour l'instant. Commencez par un personnage pour comparer les indices.",
-        attrs: { colSpan: "9" },
+        attrs: { colSpan: "9", "data-label": "État" },
       }),
     );
     tbody.append(emptyRow);
@@ -89,7 +91,7 @@ export function renderGuessTable(rows) {
     rows.forEach(({ character, comparison }) => {
       const row = createEl("tr");
       // image cell should not receive feedback coloring; keep separate class
-      const imageCell = createEl("td", { className: "image-cell" });
+      const imageCell = createEl("td", { className: "image-cell", attrs: cellAttrs("Personnage") });
       if (character.image) {
         const imageWrap = createEl("div", { className: "table-image-preview" });
         const img = createEl("img", {
@@ -99,21 +101,21 @@ export function renderGuessTable(rows) {
         imageWrap.append(img);
         imageCell.append(imageWrap);
       }
-      const nameTd = createEl("td", { className: fieldClass(comparison.name.status), text: character.name });
-      const raceTd = createEl("td", { className: fieldClass(comparison.race.status), text: character.race });
-      const sagasTd = createEl("td", { className: fieldClass(comparison.sagas.status), text: character.sagas.join(", ") });
-      const affTd = createEl("td", { className: fieldClass(comparison.affiliations.status), text: character.affiliations.join(", ") });
-      const alignTd = createEl("td", { className: fieldClass(comparison.alignment.status), text: character.alignment });
+      const nameTd = createEl("td", { className: fieldClass(comparison.name.status), text: character.name, attrs: cellAttrs("Nom") });
+      const raceTd = createEl("td", { className: fieldClass(comparison.race.status), text: character.race, attrs: cellAttrs("Race") });
+      const sagasTd = createEl("td", { className: fieldClass(comparison.sagas.status), text: character.sagas.join(", "), attrs: cellAttrs("Saga") });
+      const affTd = createEl("td", { className: fieldClass(comparison.affiliations.status), text: character.affiliations.join(", "), attrs: cellAttrs("Affiliation") });
+      const alignTd = createEl("td", { className: fieldClass(comparison.alignment.status), text: character.alignment, attrs: cellAttrs("Alignement") });
 
       const yearStatus = comparison.firstAppearanceYear.status;
       const yearCls = (yearStatus === "exact" ? "feedback-cell feedback-exact" : "feedback-cell feedback-none") + (yearStatus === "higher" ? " hint-up" : yearStatus === "lower" ? " hint-down" : "");
-      const yearTd = createEl("td", { className: yearCls, text: renderYear(yearStatus, comparison.firstAppearanceYear.value) });
+      const yearTd = createEl("td", { className: yearCls, text: renderYear(yearStatus, comparison.firstAppearanceYear.value), attrs: cellAttrs("Année") });
 
-      const serieTd = createEl("td", { className: fieldClass(comparison.seriePremiereAppearance.status), text: String(comparison.seriePremiereAppearance.value || "-") });
+      const serieTd = createEl("td", { className: fieldClass(comparison.seriePremiereAppearance.status), text: String(comparison.seriePremiereAppearance.value || "-"), attrs: cellAttrs("Série") });
 
       const epStatus = comparison.episodePremiereAppearance.status;
       const epCls = (epStatus === "exact" ? "feedback-cell feedback-exact" : "feedback-cell feedback-none") + (epStatus === "higher" ? " hint-up" : epStatus === "lower" ? " hint-down" : "");
-      const epTd = createEl("td", { className: epCls, text: renderEpisode(epStatus, comparison.episodePremiereAppearance.value) });
+      const epTd = createEl("td", { className: epCls, text: renderEpisode(epStatus, comparison.episodePremiereAppearance.value), attrs: cellAttrs("Épisode") });
 
       row.append(imageCell, nameTd, raceTd, sagasTd, affTd, alignTd, yearTd, serieTd, epTd);
       tbody.append(row);
